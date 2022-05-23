@@ -17,6 +17,7 @@ namespace SAV_Projekt
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
+    /// moffa
     /// </summary>
     public partial class MainWindow : Window
     {
