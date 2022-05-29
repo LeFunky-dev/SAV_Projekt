@@ -10,15 +10,9 @@
         DataContext="{Binding Source={StaticResource Locator}, Path=Main}"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <lvc:CartesianChart Margin="20"
-                Height="300"
-                Series="{Binding SeriesCollection}"
-                LegendLocation="Left">
-
+        <lvc:CartesianChart Series="{Binding Series}" LegendLocation="Right" >
             <lvc:CartesianChart.AxisX>
-                <lvc:Axis Title="Timestamp"
-          LabelFormatter="{Binding LabelFormatter}">
-                </lvc:Axis>
+                <lvc:Axis Title="Month" Labels="{Binding Formatter}"></lvc:Axis>
             </lvc:CartesianChart.AxisX>
         </lvc:CartesianChart>
     </Grid>

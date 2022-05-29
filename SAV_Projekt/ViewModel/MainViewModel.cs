@@ -17,36 +17,28 @@ namespace SAV_Projekt.ViewModel
     {
         private const string targetDirectory = @"..\..\..\ETF_Data\";
         public ObservableCollection<Etf> ETFs { get; set; }
+        public Func<double, string> Formatter { get; set; }
+        public SeriesCollection Series { get; set; }
+        public ChartValues<EtfValue> Values { get; set; }
+
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
         /// </summary>
         public MainViewModel()
         {
             ETFs = new ObservableCollection<Etf>();
-            InitValues();
-            CartesianMapper<EtfValue> mapper = Mappers.Xy<EtfValue>()
-              .X((item) => (double)item.Date.Ticks / TimeSpan.FromMinutes(5).Ticks) // Set interval to 5 minutes
-              .Y(item => item.Value)
-              .Fill((item) => item.Value > 99 ? Brushes.Red : Brushes.Blue);
+            Values = new ChartValues<EtfValue>();
+            var dayConfig = Mappers.Xy<EtfValue>()
+                .X(dayModel => dayModel.Date.ToOADate())
+                .Y(dayModel => dayModel.Value);
+            Series = new SeriesCollection(dayConfig);
 
-            var series = new ColumnSeries()
-            {
-                Title = "Timestamp Values",
-                Configuration = mapper,
-                Values = new ChartValues<EtfValue>
-                  {
-                    new EtfValue() {Date = DateTime.Now, Value = 100},
-                    new EtfValue() {Date = DateTime.Now.AddMinutes(15), Value = 78},
-                    new EtfValue() {Date = DateTime.Now.AddMinutes(30), Value = 21}
-                  }
-            };
-            this.SeriesCollection = new SeriesCollection() { series };
+            InitValues();
+
+
+            Formatter = value => new System.DateTime((long)(value * TimeSpan.FromDays(30).Ticks)).ToString("t");
         }
 
-        public SeriesCollection SeriesCollection { get; set; }
-
-        public Func<double, string> LabelFormatter =>
-          value => new DateTime((long)value * TimeSpan.FromMinutes(5).Ticks).ToString("t");
         private void InitValues()
         {
             string[] fileEntries = Directory.GetFiles(targetDirectory);
@@ -58,7 +50,7 @@ namespace SAV_Projekt.ViewModel
                     Etf ETF = new Etf()
                     {
                         Name = line.Split(',')[1],
-                        Values = new ObservableCollection<EtfValue>()
+                        Values = new ChartValues<EtfValue>()
                     };
                     while (!reader.EndOfStream)
                     {
@@ -70,11 +62,18 @@ namespace SAV_Projekt.ViewModel
                             Date = DateTime.ParseExact(values[0], "yyyy-MM", CultureInfo.InvariantCulture),
                             Value = double.Parse(values[1], new CultureInfo("en-US"))
                         });
+                        
                     }
+                    Series.Add(new LineSeries()
+                    {
+                        Values = ETF.Values,
+                        Fill = Brushes.Transparent
+                    });
                     ETFs.Add(ETF);
+                    
                 }
+                break;
             }
         }
     }
-
 }
