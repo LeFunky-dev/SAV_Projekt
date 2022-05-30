@@ -1,4 +1,6 @@
-﻿using System;
+﻿using GalaSoft.MvvmLight.Messaging;
+using SAV_Projekt.View;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,9 +23,27 @@ namespace SAV_Projekt
     /// </summary>
     public partial class MainWindow : Window
     {
+        public Dictionary<string, Window> WindowDictionary { get; private set; }
         public MainWindow()
         {
             InitializeComponent();
+            WindowDictionary = new Dictionary<string, Window>();
+
+            Messenger.Default.Register<OperatingCommandsEnum>(this, (command) =>
+            {
+                switch (command)
+                {
+                    case OperatingCommandsEnum.OpenEtfDetail:
+                        {
+                            //open Window and store in Dictionary
+                            WindowDictionary.Add("OpenEtfDetailWindow", new EtfDetailWindow());
+                            WindowDictionary["OpenEtfDetailWindow"].Show();
+                            break;
+                        }
+                    default: break;
+                };
+            });
         }
+
     }
 }

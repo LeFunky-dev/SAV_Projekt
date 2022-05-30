@@ -78,8 +78,14 @@
     </ApplicationDefinition>
     <Compile Include="Model\Etf.cs" />
     <Compile Include="Model\EtfValue.cs" />
+    <Compile Include="OperatingCommandsEnum.cs" />
+    <Compile Include="ViewModel\EtfDetailViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
+    <Page Include="View\EtfDetailWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -87,6 +93,9 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="View\EtfDetailWindow.xaml.cs">
+      <DependentUpon>EtfDetailWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

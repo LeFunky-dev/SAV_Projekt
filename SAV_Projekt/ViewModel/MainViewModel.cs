@@ -1,4 +1,6 @@
 using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
 using LiveCharts;
 using LiveCharts.Configurations;
 using LiveCharts.Defaults;
@@ -9,6 +11,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace SAV_Projekt.ViewModel
@@ -16,10 +19,17 @@ namespace SAV_Projekt.ViewModel
     public class MainViewModel : ViewModelBase
     {
         private const string targetDirectory = @"..\..\..\ETF_Data\";
+
         public ObservableCollection<Etf> ETFs { get; set; }
-        public Func<double, string> Formatter { get; set; }
-        public SeriesCollection Series { get; set; }
-        public ChartValues<EtfValue> Values { get; set; }
+        public ICommand ShowEtfDetailCommand { get { return new RelayCommand<Etf>(ShowEtfDetail); } }
+
+        private void ShowEtfDetail(Etf etf)
+        {
+            Messenger.Default.Send(OperatingCommandsEnum.OpenEtfDetail);
+            Messenger.Default.Send(new NotificationMessage<Etf>(etf,OperatingCommandsEnum.ShowEtfDetail.ToString()));
+        }
+
+        
 
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
@@ -27,16 +37,12 @@ namespace SAV_Projekt.ViewModel
         public MainViewModel()
         {
             ETFs = new ObservableCollection<Etf>();
-            Values = new ChartValues<EtfValue>();
-            var dayConfig = Mappers.Xy<EtfValue>()
-                .X(dayModel => dayModel.Date.ToOADate())
-                .Y(dayModel => dayModel.Value);
-            Series = new SeriesCollection(dayConfig);
+            
 
             InitValues();
 
 
-            Formatter = value => new System.DateTime((long)(value * TimeSpan.FromDays(30).Ticks)).ToString("t");
+            
         }
 
         private void InitValues()
@@ -50,7 +56,7 @@ namespace SAV_Projekt.ViewModel
                     Etf ETF = new Etf()
                     {
                         Name = line.Split(',')[1],
-                        Values = new ChartValues<EtfValue>()
+                        Values = new ObservableCollection<EtfValue>()
                     };
                     while (!reader.EndOfStream)
                     {
@@ -64,15 +70,14 @@ namespace SAV_Projekt.ViewModel
                         });
                         
                     }
-                    Series.Add(new LineSeries()
-                    {
-                        Values = ETF.Values,
-                        Fill = Brushes.Transparent
-                    });
+                    //Series.Add(new LineSeries()
+                    //{
+                    //    Values = ETF.Values,
+                    //    Fill = Brushes.Transparent
+                    //});
                     ETFs.Add(ETF);
                     
                 }
-                break;
             }
         }
     }

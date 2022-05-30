@@ -11,6 +11,6 @@ namespace SAV_Projekt.Model
     public class Etf
     {
         public string Name { get; set; }
-        public ChartValues<EtfValue> Values { get; set; }
+        public ObservableCollection<EtfValue> Values { get; set; }
     }
 }

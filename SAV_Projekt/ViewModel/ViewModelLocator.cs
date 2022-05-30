@@ -43,6 +43,7 @@ namespace SAV_Projekt.ViewModel
             ////}
 
             SimpleIoc.Default.Register<MainViewModel>();
+            SimpleIoc.Default.Register<EtfDetailViewModel>();
         }
 
         public MainViewModel Main
@@ -50,6 +51,14 @@ namespace SAV_Projekt.ViewModel
             get
             {
                 return ServiceLocator.Current.GetInstance<MainViewModel>();
+            }
+        }
+
+        public EtfDetailViewModel EtfDetail
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<EtfDetailViewModel> ();
             }
         }
         
