@@ -35,9 +35,18 @@ namespace SAV_Projekt
                 {
                     case OperatingCommandsEnum.OpenEtfDetail:
                         {
-                            //open Window and store in Dictionary
-                            WindowDictionary.Add("OpenEtfDetailWindow", new EtfDetailWindow());
-                            WindowDictionary["OpenEtfDetailWindow"].Show();
+                            if (!WindowDictionary.ContainsKey("OpenEtfDetailWindow"))
+                            {
+                                //open Window and store in Dictionary
+                                WindowDictionary.Add("OpenEtfDetailWindow", new EtfDetailWindow());
+                                WindowDictionary["OpenEtfDetailWindow"].Show();
+                            }
+                            break;
+                        }
+                    case OperatingCommandsEnum.CloseEtfDetail:
+                        {
+                            WindowDictionary["OpenEtfDetailWindow"].Close();
+                            WindowDictionary.Remove("OpenEtfDetailWindow");
                             break;
                         }
                     default: break;

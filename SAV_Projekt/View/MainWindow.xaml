@@ -9,17 +9,36 @@
         
         
         Title="MainWindow" Height="450" Width="800">
-    <StackPanel>
-        <ListBox ItemsSource="{Binding ETFs}">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding Name}" Margin="10,10,10,10"></TextBlock>
-                        <Button Command="{Binding DataContext.ShowEtfDetailCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBox}}}"
+    <StackPanel >
+        <StackPanel>
+            <TextBlock Text="{Binding FirstPortfolioToCompare.Name}"></TextBlock>
+            <ListBox ItemsSource="{Binding FirstPortfolioToCompare.PortfolioEtfs}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Etf.Name}" Margin="10,10,10,10"></TextBlock>
+                            <TextBlock Text="{Binding PercentageOfPortfolio}" Margin="10,10,10,10"></TextBlock>
+                            <Button Command="{Binding DataContext.ShowEtfDetailCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBox}}}"
                                     CommandParameter="{Binding }" MinWidth="100" Height="22">Detailansicht</Button>
-                    </StackPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </StackPanel>
+        <StackPanel>
+            <TextBlock Text="{Binding SecondPortfolioToCompare.Name}"></TextBlock>
+            <ListBox ItemsSource="{Binding SecondPortfolioToCompare.PortfolioEtfs}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Etf.Name}" Margin="10,10,10,10"></TextBlock>
+                            <TextBlock Text="{Binding PercentageOfPortfolio}" Margin="10,10,10,10"></TextBlock>
+                            <Button Command="{Binding DataContext.ShowEtfDetailCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBox}}}"
+                                    CommandParameter="{Binding }" MinWidth="100" Height="22">Detailansicht</Button>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </StackPanel>
     </StackPanel>
 </Window>

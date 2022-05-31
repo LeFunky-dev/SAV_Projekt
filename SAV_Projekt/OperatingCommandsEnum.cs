@@ -9,6 +9,7 @@ namespace SAV_Projekt
     public enum OperatingCommandsEnum
     {
         ShowEtfDetail,
-        OpenEtfDetail
+        OpenEtfDetail,
+        CloseEtfDetail
     }
 }

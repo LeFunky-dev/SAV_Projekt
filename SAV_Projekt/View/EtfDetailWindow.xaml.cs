@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GalaSoft.MvvmLight.Messaging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,6 +23,11 @@ namespace SAV_Projekt.View
         public EtfDetailWindow()
         {
             InitializeComponent();
+        }
+        protected override void OnClosed(EventArgs e)
+        {
+            Messenger.Default.Send(OperatingCommandsEnum.CloseEtfDetail);
+            this.Close();
         }
     }
 }

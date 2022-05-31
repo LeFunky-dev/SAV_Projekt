@@ -19,14 +19,16 @@ namespace SAV_Projekt.ViewModel
     public class MainViewModel : ViewModelBase
     {
         private const string targetDirectory = @"..\..\..\ETF_Data\";
-
+        public ObservableCollection<Portfolio> AllPortfolios { get; set; }
+        public Portfolio FirstPortfolioToCompare { get; set; }
+        public Portfolio SecondPortfolioToCompare { get; set; }
         public ObservableCollection<Etf> ETFs { get; set; }
-        public ICommand ShowEtfDetailCommand { get { return new RelayCommand<Etf>(ShowEtfDetail); } }
+        public ICommand ShowEtfDetailCommand { get { return new RelayCommand<PortfolioEtf>(ShowEtfDetail); } }
 
-        private void ShowEtfDetail(Etf etf)
+        private void ShowEtfDetail(PortfolioEtf portfolioEtf)
         {
             Messenger.Default.Send(OperatingCommandsEnum.OpenEtfDetail);
-            Messenger.Default.Send(new NotificationMessage<Etf>(etf,OperatingCommandsEnum.ShowEtfDetail.ToString()));
+            Messenger.Default.Send(new NotificationMessage<Etf>(portfolioEtf.Etf, OperatingCommandsEnum.ShowEtfDetail.ToString()));
         }
 
         /// <summary>
@@ -35,8 +37,51 @@ namespace SAV_Projekt.ViewModel
         public MainViewModel()
         {
             ETFs = new ObservableCollection<Etf>();
-            InitValues(); 
+            FirstPortfolioToCompare = new Portfolio();
+            AllPortfolios = new ObservableCollection<Portfolio>();
+            InitValues();
+            InitPortfolios();
         }
+
+        private void InitPortfolios()
+        {
+            Portfolio Portfolio7030= new Portfolio()
+            {
+                Name = "Portfolio 70/30",
+                PortfolioEtfs = new ObservableCollection<PortfolioEtf>()
+            };
+            Portfolio7030.PortfolioEtfs.Add(new PortfolioEtf()
+            {
+                Etf = ETFs[0],
+                PercentageOfPortfolio = 0.7m
+            });
+            Portfolio7030.PortfolioEtfs.Add(new PortfolioEtf()
+            {
+                Etf = ETFs[1],
+                PercentageOfPortfolio = 0.3m
+            });
+            FirstPortfolioToCompare = Portfolio7030;
+            RaisePropertyChanged("FirstPortfolioToCompare");
+
+            Portfolio PortfolioGlobal = new Portfolio()
+            {
+                Name = "Portfolio Global",
+                PortfolioEtfs = new ObservableCollection<PortfolioEtf>()
+            };
+            PortfolioGlobal.PortfolioEtfs.Add(new PortfolioEtf()
+            {
+                Etf = ETFs[3],
+                PercentageOfPortfolio = 0.4m
+            });
+            PortfolioGlobal.PortfolioEtfs.Add(new PortfolioEtf()
+            {
+                Etf = ETFs[2],
+                PercentageOfPortfolio = 0.60m
+            });
+            SecondPortfolioToCompare = PortfolioGlobal;
+            RaisePropertyChanged("SecondPortfolioToCompare");
+        }
+
         private void InitValues()
         {
             string[] fileEntries = Directory.GetFiles(targetDirectory);

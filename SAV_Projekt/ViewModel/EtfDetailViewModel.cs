@@ -20,6 +20,10 @@ namespace SAV_Projekt.ViewModel
         public ChartValues<EtfValue> ChartValues { get; set; }
         public EtfDetailViewModel()
         {
+            Messenger.Default.Register<NotificationMessage<Model.Etf>>(this, (c) => NotificationMessageReceived(c.Notification, c.Content));
+        }
+        private void NotificationMessageReceived(string notification, Etf content)
+        {
             Etf = new Etf();
             ChartValues = new ChartValues<EtfValue>();
             var dayConfig = Mappers.Xy<EtfValue>()
@@ -27,11 +31,6 @@ namespace SAV_Projekt.ViewModel
                            .Y(dayModel => dayModel.Value);
             Series = new SeriesCollection(dayConfig);
             Formatter = value => new DateTime((long)value).ToString("yyyy-MM");
-            Messenger.Default.Register<NotificationMessage<Model.Etf>>(this, (c) => NotificationMessageReceived(c.Notification, c.Content));
-        }
-
-        private void NotificationMessageReceived(string notification, Etf content)
-        {
             switch ((OperatingCommandsEnum)Enum.Parse(typeof(OperatingCommandsEnum), notification))
             {
                 case OperatingCommandsEnum.ShowEtfDetail:
@@ -48,6 +47,8 @@ namespace SAV_Projekt.ViewModel
                     }
                 default: break;
             }
+            RaisePropertyChanged("Formatter");
+            RaisePropertyChanged("Series");
         }
     }
 }
