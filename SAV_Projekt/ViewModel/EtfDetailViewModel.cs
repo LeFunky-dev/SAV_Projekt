@@ -23,10 +23,10 @@ namespace SAV_Projekt.ViewModel
             Etf = new Etf();
             ChartValues = new ChartValues<EtfValue>();
             var dayConfig = Mappers.Xy<EtfValue>()
-                .X(dayModel => dayModel.Date.ToOADate())
-                .Y(dayModel => dayModel.Value);
+                           .X(dayModel => dayModel.Date.Ticks)
+                           .Y(dayModel => dayModel.Value);
             Series = new SeriesCollection(dayConfig);
-            Formatter = value => new System.DateTime((long)(value * TimeSpan.FromDays(30).Ticks)).ToString("t");
+            Formatter = value => new DateTime((long)value).ToString("yyyy-MM");
             Messenger.Default.Register<NotificationMessage<Model.Etf>>(this, (c) => NotificationMessageReceived(c.Notification, c.Content));
         }
 

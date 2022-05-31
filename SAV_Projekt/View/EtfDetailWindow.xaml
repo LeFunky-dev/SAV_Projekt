@@ -11,7 +11,7 @@
     <DockPanel>
         <lvc:CartesianChart Series="{Binding Series}" LegendLocation="Right" >
             <lvc:CartesianChart.AxisX>
-                <lvc:Axis Title="Month" Labels="{Binding Formatter}"></lvc:Axis>
+                <lvc:Axis Title="Month" LabelFormatter="{Binding Formatter}"></lvc:Axis>
             </lvc:CartesianChart.AxisX>
         </lvc:CartesianChart>
     </DockPanel>

@@ -29,22 +29,14 @@ namespace SAV_Projekt.ViewModel
             Messenger.Default.Send(new NotificationMessage<Etf>(etf,OperatingCommandsEnum.ShowEtfDetail.ToString()));
         }
 
-        
-
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
         /// </summary>
         public MainViewModel()
         {
             ETFs = new ObservableCollection<Etf>();
-            
-
-            InitValues();
-
-
-            
+            InitValues(); 
         }
-
         private void InitValues()
         {
             string[] fileEntries = Directory.GetFiles(targetDirectory);
@@ -70,13 +62,7 @@ namespace SAV_Projekt.ViewModel
                         });
                         
                     }
-                    //Series.Add(new LineSeries()
-                    //{
-                    //    Values = ETF.Values,
-                    //    Fill = Brushes.Transparent
-                    //});
                     ETFs.Add(ETF);
-                    
                 }
             }
         }
