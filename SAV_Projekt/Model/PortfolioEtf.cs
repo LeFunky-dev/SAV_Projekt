@@ -9,6 +9,6 @@ namespace SAV_Projekt.Model
     public class PortfolioEtf
     {
         public Etf Etf { get; set; }
-        public decimal PercentageOfPortfolio { get; set; }
+        public double PercentageOfPortfolio { get; set; }
     }
 }
