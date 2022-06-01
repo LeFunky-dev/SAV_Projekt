@@ -41,7 +41,9 @@ namespace SAV_Projekt.ViewModel
                         }
                         Series.Add(new LineSeries()
                         {
-                            Values = ChartValues
+                            Values = ChartValues,
+                            Title = content.Name,
+                            
                         });
                         break;
                     }

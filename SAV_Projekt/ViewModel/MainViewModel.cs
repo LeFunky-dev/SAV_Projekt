@@ -188,6 +188,7 @@ namespace SAV_Projekt.ViewModel
             FirstPortfolioToDisplay.Add(new LineSeries()
             {
                 Values = etfValues,
+                Title = SecondPortfolioToCompare.Name,
             });
              etfValues = new ChartValues<EtfValue>();
              minDates = new List<DateTime>();
@@ -236,6 +237,7 @@ namespace SAV_Projekt.ViewModel
             FirstPortfolioToDisplay.Add(new LineSeries()
             {
                 Values= etfValues,
+                Title = FirstPortfolioToCompare.Name,
             });
             RaisePropertyChanged("FirstPortfolioToDisplay");
             //percentage calc
