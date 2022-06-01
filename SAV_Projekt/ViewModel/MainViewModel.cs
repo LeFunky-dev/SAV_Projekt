@@ -238,6 +238,7 @@ namespace SAV_Projekt.ViewModel
                 Values= etfValues,
             });
             RaisePropertyChanged("FirstPortfolioToDisplay");
+            //percentage calc
         }
     }
 }
