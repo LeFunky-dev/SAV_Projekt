@@ -126,7 +126,7 @@ namespace SAV_Projekt.ViewModel
                         ETF.Values.Add(new EtfValue()
                         {
                             Date = DateTime.ParseExact(values[0], "yyyy-MM", CultureInfo.InvariantCulture),
-                            Value = double.Parse(values[1], new CultureInfo("en-US"))
+                            Value = Math.Round(double.Parse(values[1], new CultureInfo("en-US")),1)
                         });
                         
                     }

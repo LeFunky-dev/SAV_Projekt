@@ -86,6 +86,7 @@
     <Compile Include="Model\EtfValue.cs" />
     <Compile Include="Model\Portfolio.cs" />
     <Compile Include="Model\PortfolioEtf.cs" />
+    <Compile Include="Model\ValueGrowth.cs" />
     <Compile Include="OperatingCommandsEnum.cs" />
     <Compile Include="ViewModel\EtfDetailViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />

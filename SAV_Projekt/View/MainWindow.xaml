@@ -8,8 +8,8 @@
         xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         DataContext="{Binding Source={StaticResource Locator}, Path=Main}"
         mc:Ignorable="d"
-        
-        Title="MainWindow" Height="1080" Width="1920">
+        WindowState="Maximized" WindowStyle="None"
+        Title="MainWindow">
     <DockPanel>
         <StackPanel DockPanel.Dock="Left" Width="1920" Height="1000">
             <StackPanel Orientation="Horizontal">
