@@ -10,5 +10,7 @@ namespace SAV_Projekt.Model
     {
         public Etf Etf { get; set; }
         public double PercentageOfPortfolio { get; set; }
+        public DateTime MinDate { get; set; }
+        public DateTime MaxDate { get; set; }
     }
 }

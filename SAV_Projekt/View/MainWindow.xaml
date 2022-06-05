@@ -10,8 +10,12 @@
         mc:Ignorable="d"
         WindowState="Maximized" WindowStyle="None"
         Title="MainWindow">
-    <DockPanel>
-        <StackPanel DockPanel.Dock="Left" Width="1920" Height="1000">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.7*"></ColumnDefinition>
+            <ColumnDefinition Width="0.3*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="0" Height="1000">
             <StackPanel Orientation="Horizontal">
                 <Button Margin="10,10,10,0" Width="350" Height="40">Transaktionen für alle Portfolios</Button>
                 <Button Margin="10,10,10,0" Width="350" Height="40">Neues Portfolio erstellen</Button>
@@ -36,53 +40,109 @@
                     </ComboBox.ItemTemplate>
                 </ComboBox>
             </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <lvc:CartesianChart Name="ETF" Series="{Binding FirstPortfolioToDisplay}" LegendLocation="Right" Height="700" Width="1400" HorizontalAlignment="left" Margin="10,10,10,10"
+            <StackPanel Orientation="Horizontal" Margin="10,10,10,10">
+                <Label Grid.Column="0" Foreground="Black" Margin="10,0,0,0" VerticalAlignment="Center">Von</Label>
+                <DatePicker Grid.Column="0" Foreground="Black" Margin="10,0,0,0" SelectedDate="{Binding MinDate}" VerticalAlignment="Center">
+                    <DatePicker.Resources>
+                        <Style TargetType="DatePickerTextBox">
+                            <Setter Property="IsReadOnly" Value="True"/>
+                            <Setter Property="Text" Value="{Binding Path=SelectedDate, StringFormat='yyyy/MM', RelativeSource={RelativeSource AncestorType=DatePicker}}"></Setter>
+                        </Style>
+                    </DatePicker.Resources>
+                </DatePicker>
+                <Label Grid.Column="0" Foreground="Black" Margin="10,0,0,0" VerticalAlignment="Center">Bis</Label>
+                <DatePicker Grid.Column="0" Foreground="Black" Margin="10,0,0,0" SelectedDate="{Binding MaxDate}">
+                    <DatePicker.Resources>
+                        <Style TargetType="DatePickerTextBox">
+                            <Setter Property="IsReadOnly" Value="True"/>
+                            <Setter Property="Text" Value="{Binding Path=SelectedDate, StringFormat='yyyy/MM', RelativeSource={RelativeSource AncestorType=DatePicker}}"></Setter>
+                        </Style>
+                    </DatePicker.Resources>
+                </DatePicker>
+                <Button Grid.Row="0" Grid.Column="1" Margin="20,0,20,0" Width="100" Command="{Binding ResetPortfolioComparisonCommand}" VerticalAlignment="Center">Reset</Button>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="10,10,10,0">
+                <lvc:CartesianChart Name="ETF" Series="{Binding FirstPortfolioToDisplay}" LegendLocation="Right" Height="650" Width="1300" HorizontalAlignment="left" Margin="10,10,10,10"
                                 VerticalAlignment="Top">
                     <lvc:CartesianChart.AxisX>
-                        <lvc:Axis Title="Month" LabelFormatter="{Binding Formatter}">
+                        <lvc:Axis Title="Month" LabelFormatter="{Binding Formatter}" MinValue="{Binding MinDateDouble}" MaxValue="{Binding MaxDateDouble}">
                         </lvc:Axis>
                     </lvc:CartesianChart.AxisX>
                 </lvc:CartesianChart>
-                <StackPanel>
-                    <StackPanel Margin="10,10,10,10">
-                        <TextBlock Text="{Binding FirstPortfolioToCompare.Name}"></TextBlock>
-                        <ListBox ItemsSource="{Binding FirstPortfolioToCompare.PortfolioEtfs}">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="{Binding Etf.Name}" Margin="10,10,10,10"></TextBlock>
-                                        <TextBlock Text="{Binding PercentageOfPortfolio}" Margin="10,10,10,10"></TextBlock>
-                                        <Button Command="{Binding DataContext.ShowEtfDetailCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBox}}}"
-                                    CommandParameter="{Binding }" MinWidth="100" Height="40">Detailansicht</Button>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                    </StackPanel>
-                    <StackPanel Margin="10,10,10,10">
-                        <TextBlock Text="{Binding SecondPortfolioToCompare.Name}"></TextBlock>
-                        <ListBox ItemsSource="{Binding SecondPortfolioToCompare.PortfolioEtfs}">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="{Binding Etf.Name}" Margin="10,10,10,10"></TextBlock>
-                                        <TextBlock Text="{Binding PercentageOfPortfolio}" Margin="10,10,10,10"></TextBlock>
-                                        <Button Command="{Binding DataContext.ShowEtfDetailCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBox}}}"
-                                    CommandParameter="{Binding }" MinWidth="100" Height="40">Detailansicht</Button>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                    </StackPanel>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                
+            </StackPanel>
+            <StackPanel Margin="20,0,10,10">
+                <Label Padding="5,0,0,5" FontWeight="Bold" Foreground="Black">Wertentwicklung:</Label>
+                <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Horizontal" Margin="5,0,0,5">
+                    <Label Padding="5,0,0,0" Width="60" BorderBrush="Black" BorderThickness="1" Foreground="Black">Zeitraum</Label>
+                    <Label Padding="5,0,0,0" Width="100" BorderBrush="Black" BorderThickness="1" Foreground="Black" Content="{Binding FirstPortfolioToCompare.Name}"></Label>
+                    <Label Padding="5,0,0,0" Width="100" BorderBrush="Black" BorderThickness="1" Foreground="Black" Content="{Binding SecondPortfolioToCompare.Name}"></Label>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <ListView HorizontalAlignment="Left" VerticalAlignment="Top" ItemsSource="{Binding ValueGrowthSecond}" Margin="0,0,0,0">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+                                    <Label Content="{Binding Period}" Padding="5,0,0,0" Margin="0,0,0,0" Width="60" BorderBrush="Black" BorderThickness="1" Foreground="Black"></Label>
+                                    <Label Content="{Binding Performance}" Padding="5,0,0,0" Margin="10,0,0,0" Width="80" BorderBrush="Black" BorderThickness="1" Foreground="{Binding Color}"></Label>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    <ListView HorizontalAlignment="Left" VerticalAlignment="Top" ItemsSource="{Binding ValueGrowthFirst}" Margin="0,0,0,0">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+                                    <Label Content="{Binding Performance}" Padding="5,0,0,0" Margin="10,0,0,0" Width="80" BorderBrush="Black" BorderThickness="1" Foreground="{Binding Color}"></Label>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
                 </StackPanel>
                 
             </StackPanel>
-            
+
         </StackPanel>
-        <StackPanel DockPanel.Dock="Right" Margin="0,10,10,10">
-            
+        <StackPanel Grid.Column="1" Margin="0,10,10,10">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="0.5*"></RowDefinition>
+                    <RowDefinition Height="0.5*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="0" Margin="10,10,10,10">
+                    <TextBlock Text="{Binding FirstPortfolioToCompare.Name}"></TextBlock>
+                    <ListBox ItemsSource="{Binding FirstPortfolioToCompare.PortfolioEtfs}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding Etf.Name}" Margin="10,10,10,10"></TextBlock>
+                                    <TextBlock Text="{Binding PercentageOfPortfolio}" Margin="10,10,10,10"></TextBlock>
+                                    <Button Command="{Binding DataContext.ShowEtfDetailCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBox}}}"
+                                    CommandParameter="{Binding }" MinWidth="100" Height="40">Detailansicht</Button>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </StackPanel>
+                <StackPanel Grid.Row="1" Margin="10,10,10,10">
+                    <TextBlock Text="{Binding SecondPortfolioToCompare.Name}"></TextBlock>
+                    <ListBox ItemsSource="{Binding SecondPortfolioToCompare.PortfolioEtfs}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding Etf.Name}" Margin="10,10,10,10"></TextBlock>
+                                    <TextBlock Text="{Binding PercentageOfPortfolio}" Margin="10,10,10,10"></TextBlock>
+                                    <Button Command="{Binding DataContext.ShowEtfDetailCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBox}}}"
+                                    CommandParameter="{Binding }" MinWidth="100" Height="40">Detailansicht</Button>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </StackPanel>
+
+            </Grid>
         </StackPanel>
-        
-    </DockPanel>
+    </Grid>
 </Window>

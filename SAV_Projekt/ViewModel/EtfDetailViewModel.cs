@@ -118,7 +118,7 @@ namespace SAV_Projekt.ViewModel
                 {
                     if(value.Date == startValue)
                     {
-                        var calcPerf = ((startPerformance/value.Value  * 100) - 100);
+                        var calcPerf = (startPerformance - value.Value);
                         valueGrowths.Add(new ValueGrowth()
                         {
                             Period = totalVal > 1 ? totalVal + " Jahre" : totalVal + " Jahr",
