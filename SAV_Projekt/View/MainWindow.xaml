@@ -17,7 +17,7 @@
                 <Button Margin="10,10,10,0" Width="350" Height="40">Neues Portfolio erstellen</Button>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="10,10,10,10">
-                <ComboBox ItemsSource="{Binding AllPortfolios}" SelectedItem="{Binding FirstPortfolioToCompare}" Foreground="Black" Background="LightBlue" Style="{StaticResource {x:Static ToolBar.ComboBoxStyleKey}}">
+                <ComboBox ItemsSource="{Binding AllPortfolios}" SelectedItem="{Binding FirstPortfolioToCompare}" Foreground="Black" Style="{StaticResource {x:Static ToolBar.ComboBoxStyleKey}}">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal" Width="330">
@@ -26,7 +26,7 @@
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
-                <ComboBox ItemsSource="{Binding AllPortfolios}" SelectedItem="{Binding SecondPortfolioToCompare}" Foreground="Black" Margin="25,0,0,0" Background="LightBlue" Style="{StaticResource {x:Static ToolBar.ComboBoxStyleKey}}">
+                <ComboBox ItemsSource="{Binding AllPortfolios}" SelectedItem="{Binding SecondPortfolioToCompare}" Foreground="Black" Margin="25,0,0,0" Style="{StaticResource {x:Static ToolBar.ComboBoxStyleKey}}">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal" Width="330">
@@ -47,7 +47,7 @@
                 <StackPanel>
                     <StackPanel Margin="10,10,10,10">
                         <TextBlock Text="{Binding FirstPortfolioToCompare.Name}"></TextBlock>
-                        <ListBox ItemsSource="{Binding FirstPortfolioToCompare.PortfolioEtfs}" Background="Blue">
+                        <ListBox ItemsSource="{Binding FirstPortfolioToCompare.PortfolioEtfs}">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">
@@ -62,7 +62,7 @@
                     </StackPanel>
                     <StackPanel Margin="10,10,10,10">
                         <TextBlock Text="{Binding SecondPortfolioToCompare.Name}"></TextBlock>
-                        <ListBox ItemsSource="{Binding SecondPortfolioToCompare.PortfolioEtfs}" Background="Blue">
+                        <ListBox ItemsSource="{Binding SecondPortfolioToCompare.PortfolioEtfs}">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">

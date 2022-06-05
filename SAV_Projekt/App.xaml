@@ -2,7 +2,7 @@
   <Application.Resources>
     <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <wpfui:Resources Theme="Dark" />
+                <wpfui:Resources Theme="Light" />
             </ResourceDictionary.MergedDictionaries>
             <vm:ViewModelLocator x:Key="Locator" d:IsDataSource="True" xmlns:vm="clr-namespace:SAV_Projekt.ViewModel" />
         </ResourceDictionary>

@@ -7,39 +7,62 @@
         xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         mc:Ignorable="d"
         DataContext="{Binding Source={StaticResource Locator}, Path=EtfDetail}"
-        Title="EtfDetailWindow" Height="450" Width="800">
+        Title="EtfDetailWindow" Height="450" Width="1000">
     <Grid Margin="10,10,0,0">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0.8*"></ColumnDefinition>
             <ColumnDefinition Width="0.2*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="0.05*"></RowDefinition>
+            <RowDefinition Height="0.1*"></RowDefinition>
             <RowDefinition Height="0.95*"></RowDefinition>
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal">
-            <Label Grid.Column="0" FontWeight="Bold" Content="{Binding Etf.Name}" Foreground="Black" ></Label>
-            <Label Foreground="Black" Margin="30,0,0,0">Von</Label>
-            <Label Foreground="Black" Margin="10,0,0,0" Content="{Binding MinDate}"></Label>
-            <Label Foreground="Black" Margin="30,0,0,0">Bis</Label>
-            <Label Foreground="Black" Margin="10,0,0,0" Content="{Binding MaxDate}"></Label>
+            <Label Grid.Column="0" FontWeight="Bold" Content="{Binding Etf.Name}" Foreground="Black" VerticalAlignment="Center"></Label>
+            <Label Grid.Column="0" Foreground="Black" Margin="30,0,0,0" VerticalAlignment="Center">Von</Label>
+            <DatePicker Grid.Column="0" Foreground="Black" Margin="10,0,0,0" SelectedDate="{Binding MinDate}" VerticalAlignment="Center">
+                <DatePicker.Resources>
+                    <Style TargetType="DatePickerTextBox">
+                        <Setter Property="IsReadOnly" Value="True"/>
+                        <Setter Property="Text" Value="{Binding Path=SelectedDate, StringFormat='yyyy/MM', RelativeSource={RelativeSource AncestorType=DatePicker}}"></Setter>
+                    </Style>
+                </DatePicker.Resources>
+            </DatePicker>
+            <Label Grid.Column="0" Foreground="Black" Margin="30,0,0,0" VerticalAlignment="Center">Bis</Label>
+            <DatePicker Grid.Column="0" Foreground="Black" Margin="10,0,0,0" SelectedDate="{Binding MaxDate}">
+                <DatePicker.Resources>
+                    <Style TargetType="DatePickerTextBox">
+                        <Setter Property="IsReadOnly" Value="True"/>
+                        <Setter Property="Text" Value="{Binding Path=SelectedDate, StringFormat='yyyy/MM', RelativeSource={RelativeSource AncestorType=DatePicker}}"></Setter>
+                    </Style>
+                </DatePicker.Resources>
+            </DatePicker>
         </StackPanel>
         
         <lvc:CartesianChart Grid.Column="0" Grid.Row="1"  Name="ETF" Series="{Binding Series}" LegendLocation="None">
             <lvc:CartesianChart.AxisX>
-                <lvc:Axis Title="Month" LabelFormatter="{Binding Formatter}">
+                <lvc:Axis Title="Month" Foreground="Black" FontSize="12" LabelFormatter="{Binding Formatter}" MinValue="{Binding MinDateDouble}" MaxValue="{Binding MaxDateDouble}">
                 </lvc:Axis>
             </lvc:CartesianChart.AxisX>
+            <lvc:CartesianChart.AxisY>
+                <lvc:Axis Title="Performance" FontSize="12" Foreground="Black"></lvc:Axis>
+            </lvc:CartesianChart.AxisY>
         </lvc:CartesianChart>
+        <Button Grid.Row="0" Grid.Column="1" Margin="40,0,40,5" Command="{Binding ResetEtfDataCommand}" VerticalAlignment="Center">Reset</Button>
         <Grid Grid.Column="1" Grid.Row="1">
             <StackPanel>
-                <Label FontWeight="Bold" Foreground="Black">Wertentwicklung:</Label>
+                <Label Padding="5,0,0,5" FontWeight="Bold" Foreground="Black">Wertentwicklung:</Label>
+                <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Horizontal" Margin="5,0,0,5">
+                    <Label Padding="5,0,0,0" Width="60" BorderBrush="Black" BorderThickness="1" Foreground="Black">Zeitraum</Label>
+                    <Label Padding="5,0,0,0" Width="80" BorderBrush="Black" BorderThickness="1" Foreground="Black">Performance</Label>
+                </StackPanel>
+                
                 <ListView HorizontalAlignment="Left" VerticalAlignment="Top" ItemsSource="{Binding ValueGrowth}" Margin="0,0,0,0">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
                                 <Label Content="{Binding Period}" Padding="5,0,0,0" Margin="0,0,0,0" Width="60" BorderBrush="Black" BorderThickness="1" Foreground="Black"></Label>
-                                <Label Content="{Binding Performance}" Padding="5,0,0,0" Margin="0,0,0,0" Width="60" BorderBrush="Black" BorderThickness="1" Foreground="{Binding Color}"></Label>
+                                <Label Content="{Binding Performance}" Padding="5,0,0,0" Margin="0,0,0,0" Width="80" BorderBrush="Black" BorderThickness="1" Foreground="{Binding Color}"></Label>
                             </StackPanel>
                         </DataTemplate>
                     </ListView.ItemTemplate>

@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using LiveCharts;
 using LiveCharts.Configurations;
@@ -10,6 +11,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace SAV_Projekt.ViewModel
@@ -17,12 +19,47 @@ namespace SAV_Projekt.ViewModel
     public class EtfDetailViewModel : ViewModelBase
     {
         public Etf Etf { get; set; }
-        public string MinDate { get; set; }
-        public string MaxDate { get; set; }
+        private DateTime minDate;
+        private DateTime maxDate;
+        public DateTime MinDate
+        {
+            get { return minDate; }
+            set
+            {
+                minDate = value;
+                MinDateDouble = value.Ticks;
+                RaisePropertyChanged("MinDateDouble");
+                RaisePropertyChanged("MinDate");
+            }
+        }
+        public DateTime MaxDate 
+        {
+            get
+            {
+                return maxDate;
+            }
+            set
+            {
+                maxDate = value;
+                MaxDateDouble = value.Ticks;
+                RaisePropertyChanged("MaxDateDouble"); 
+                RaisePropertyChanged("MaxDate");
+            }
+        }
+        public double MinDateDouble { get; set; }
+        public double MaxDateDouble { get; set; }
         public ObservableCollection<ValueGrowth> ValueGrowth { get; set; }
         public Func<double, string> Formatter { get; set; }
         public SeriesCollection Series { get; set; }
         public ChartValues<EtfValue> ChartValues { get; set; }
+        public ICommand ResetEtfDataCommand { get { return new RelayCommand(ResetDate); } }
+
+        private void ResetDate()
+        {
+            MinDate = Etf.Values.FirstOrDefault().Date;
+            MaxDate = Etf.Values.LastOrDefault().Date;
+        }
+
         public EtfDetailViewModel()
         {
             Messenger.Default.Register<NotificationMessage<Model.Etf>>(this, (c) => NotificationMessageReceived(c.Notification, c.Content));
@@ -49,15 +86,13 @@ namespace SAV_Projekt.ViewModel
                         {
                             Values = ChartValues,
                             Title = ""
-
-
                         });
                         break;
                     }
                 default: break;
             }
-            MinDate = content.Values.FirstOrDefault().Date.Year.ToString();
-            MaxDate = content.Values.LastOrDefault().Date.Year.ToString();
+            MinDate = content.Values.FirstOrDefault().Date;
+            MaxDate = content.Values.LastOrDefault().Date;
             ValueGrowth = CalcValueGrowth(content);
             RaisePropertyChanged("Formatter");
             RaisePropertyChanged("Series");

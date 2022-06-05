@@ -27,8 +27,14 @@ namespace SAV_Projekt.ViewModel
         public Portfolio FirstPortfolioToCompare
         {
             get { return firstPortfolioToCompare; }
-            set { 
+            set
+            {
                 firstPortfolioToCompare = value;
+                if (firstPortfolioToCompare != null && secondPortfolioToCompare != null && firstPortfolioToCompare.PortfolioEtfs != null && secondPortfolioToCompare.PortfolioEtfs != null)
+                {
+                    CalcPortfolioSeries();
+                }
+
                 RaisePropertyChanged("FirstPortfolioToCompare");
             }
         }
@@ -36,9 +42,13 @@ namespace SAV_Projekt.ViewModel
         public Portfolio SecondPortfolioToCompare
         {
             get { return secondPortfolioToCompare; }
-            set { 
+            set
+            {
                 secondPortfolioToCompare = value;
-                CalcPortfolioSeries(true);
+                if (firstPortfolioToCompare != null && secondPortfolioToCompare != null && firstPortfolioToCompare.PortfolioEtfs != null && secondPortfolioToCompare.PortfolioEtfs != null)
+                {
+                    CalcPortfolioSeries();
+                }
                 RaisePropertyChanged("SecondPortfolioToCompare");
             }
         }
@@ -58,7 +68,14 @@ namespace SAV_Projekt.ViewModel
         public MainViewModel()
         {
             ETFs = new ObservableCollection<Etf>();
-            FirstPortfolioToCompare = new Portfolio();
+            FirstPortfolioToCompare = new Portfolio()
+            {
+                PortfolioEtfs = new ObservableCollection<PortfolioEtf>()
+            };
+            SecondPortfolioToCompare = new Portfolio()
+            {
+                PortfolioEtfs = new ObservableCollection<PortfolioEtf>()
+            };
             AllPortfolios = new ObservableCollection<Portfolio>();
             InitValues();
             InitPortfolios();
@@ -66,7 +83,7 @@ namespace SAV_Projekt.ViewModel
 
         private void InitPortfolios()
         {
-            Portfolio Portfolio7030= new Portfolio()
+            Portfolio Portfolio7030 = new Portfolio()
             {
                 Name = "Portfolio 70/30",
                 PortfolioEtfs = new ObservableCollection<PortfolioEtf>()
@@ -126,15 +143,15 @@ namespace SAV_Projekt.ViewModel
                         ETF.Values.Add(new EtfValue()
                         {
                             Date = DateTime.ParseExact(values[0], "yyyy-MM", CultureInfo.InvariantCulture),
-                            Value = Math.Round(double.Parse(values[1], new CultureInfo("en-US")),1)
+                            Value = Math.Round(double.Parse(values[1], new CultureInfo("en-US")), 1)
                         });
-                        
+
                     }
                     ETFs.Add(ETF);
                 }
             }
         }
-        private void CalcPortfolioSeries(bool firstOrSecondPortfolio)
+        private void CalcPortfolioSeries()
         {
             var dayConfig = Mappers.Xy<EtfValue>()
                .X(dayModel => dayModel.Date.Ticks)
@@ -143,45 +160,43 @@ namespace SAV_Projekt.ViewModel
             FirstPortfolioToDisplay = new SeriesCollection(dayConfig);
             ChartValues<EtfValue> etfValues = new ChartValues<EtfValue>();
             List<DateTime> minDates = new List<DateTime>();
-            foreach ( var etf in SecondPortfolioToCompare.PortfolioEtfs)
+            foreach (var etf in SecondPortfolioToCompare.PortfolioEtfs)
             {
-                minDates.Add(etf.Etf.Values[0].Date); 
+                minDates.Add(etf.Etf.Values[0].Date);
             }
             minDates.Sort();
             minDates.Reverse();
             foreach (var etf in SecondPortfolioToCompare.PortfolioEtfs)
             {
-                foreach(var value in etf.Etf.Values)
+                foreach (var value in etf.Etf.Values)
                 {
-                    if(value.Date >= minDates[0])
+                    if (value.Date >= minDates[0])
                     {
-                        if(firstOrSecondPortfolio)
+                        bool found = false;
+                        var index = 0;
+                        foreach (var storedValue in etfValues)
                         {
-                            bool found = false;
-                            var index = 0;
-                            foreach(var storedValue in etfValues)
+
+                            if (storedValue.Date == value.Date)
                             {
-                                
-                                if(storedValue.Date == value.Date)
-                                {
-                                    found = true;
-                                    index = etfValues.IndexOf(storedValue);
-                                }
-                                
+                                found = true;
+                                index = etfValues.IndexOf(storedValue);
                             }
-                            if(found)
-                            {
-                                etfValues[index].Value += value.Value * etf.PercentageOfPortfolio;
-                            }
-                            else
-                            {
-                                etfValues.Add(new EtfValue()
-                                {
-                                    Date = value.Date,
-                                    Value = value.Value * etf.PercentageOfPortfolio
-                                });
-                            }
+
                         }
+                        if (found)
+                        {
+                            etfValues[index].Value += value.Value * etf.PercentageOfPortfolio;
+                        }
+                        else
+                        {
+                            etfValues.Add(new EtfValue()
+                            {
+                                Date = value.Date,
+                                Value = value.Value * etf.PercentageOfPortfolio
+                            });
+                        }
+
                     }
                 }
             }
@@ -190,8 +205,8 @@ namespace SAV_Projekt.ViewModel
                 Values = etfValues,
                 Title = SecondPortfolioToCompare.Name,
             });
-             etfValues = new ChartValues<EtfValue>();
-             minDates = new List<DateTime>();
+            etfValues = new ChartValues<EtfValue>();
+            minDates = new List<DateTime>();
             foreach (var etf in FirstPortfolioToCompare.PortfolioEtfs)
             {
                 minDates.Add(etf.Etf.Values[0].Date);
@@ -204,39 +219,38 @@ namespace SAV_Projekt.ViewModel
                 {
                     if (value.Date >= minDates[0])
                     {
-                        if (firstOrSecondPortfolio)
+
+                        bool found = false;
+                        var index = 0;
+                        foreach (var storedValue in etfValues)
                         {
-                            bool found = false;
-                            var index = 0;
-                            foreach (var storedValue in etfValues)
-                            {
 
-                                if (storedValue.Date == value.Date)
-                                {
-                                    found = true;
-                                    index = etfValues.IndexOf(storedValue);
-                                }
+                            if (storedValue.Date == value.Date)
+                            {
+                                found = true;
+                                index = etfValues.IndexOf(storedValue);
+                            }
 
-                            }
-                            if (found)
-                            {
-                                etfValues[index].Value += value.Value * etf.PercentageOfPortfolio;
-                            }
-                            else
-                            {
-                                etfValues.Add(new EtfValue()
-                                {
-                                    Date = value.Date,
-                                    Value = value.Value * etf.PercentageOfPortfolio
-                                });
-                            }
                         }
+                        if (found)
+                        {
+                            etfValues[index].Value += value.Value * etf.PercentageOfPortfolio;
+                        }
+                        else
+                        {
+                            etfValues.Add(new EtfValue()
+                            {
+                                Date = value.Date,
+                                Value = value.Value * etf.PercentageOfPortfolio
+                            });
+                        }
+
                     }
                 }
             }
             FirstPortfolioToDisplay.Add(new LineSeries()
             {
-                Values= etfValues,
+                Values = etfValues,
                 Title = FirstPortfolioToCompare.Name,
             });
             RaisePropertyChanged("FirstPortfolioToDisplay");
