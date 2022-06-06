@@ -22,8 +22,8 @@
             </Grid.RowDefinitions>
             <StackPanel Grid.Column="0" Grid.Row="0">
                 <StackPanel Orientation="Horizontal">
-                    <Button Margin="10,10,10,0" Width="350" Height="40">Transaktionen für alle Portfolios</Button>
-                    <Button Margin="10,10,10,0" Width="350" Height="40">Neues Portfolio erstellen</Button>
+                    <Button Margin="10,10,10,0" Width="350" Height="40" >Transaktionen für alle Portfolios</Button>
+                    <Button Margin="10,10,10,0" Width="350" Height="40" Command="{Binding CreatePortfolioCommand}">Neues Portfolio erstellen</Button>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="10,10,10,10">
                     <ComboBox ItemsSource="{Binding AllPortfolios}" SelectedItem="{Binding FirstPortfolioToCompare}" Foreground="Black" Style="{StaticResource {x:Static ToolBar.ComboBoxStyleKey}}">

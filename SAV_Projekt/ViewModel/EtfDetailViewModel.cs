@@ -62,9 +62,9 @@ namespace SAV_Projekt.ViewModel
 
         public EtfDetailViewModel()
         {
-            Messenger.Default.Register<NotificationMessage<Model.Etf>>(this, (c) => NotificationMessageReceived(c.Notification, c.Content));
+            Messenger.Default.Register<NotificationMessage<Model.Etf>>(this, (c) => EtfNotification(c.Notification, c.Content));
         }
-        private void NotificationMessageReceived(string notification, Etf content)
+        private void EtfNotification(string notification, Etf content)
         {
             Etf = new Etf();
             Etf = content;

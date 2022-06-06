@@ -10,6 +10,8 @@ namespace SAV_Projekt
     {
         ShowEtfDetail,
         OpenEtfDetail,
-        CloseEtfDetail
+        CloseEtfDetail,
+        OpenPortfolioAddEdit,
+        ClosePortfolioAddEdit,
     }
 }

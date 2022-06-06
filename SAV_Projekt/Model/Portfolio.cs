@@ -12,6 +12,5 @@ namespace SAV_Projekt.Model
         public string Name { get; set; }
         public ObservableCollection<PortfolioEtf> PortfolioEtfs { get; set; }
 
-        //Todo performance in percent, kennzahlen etc
     }
 }

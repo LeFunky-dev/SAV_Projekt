@@ -43,10 +43,26 @@ namespace SAV_Projekt
                             }
                             break;
                         }
+                    case OperatingCommandsEnum.OpenPortfolioAddEdit:
+                        {
+                            if (!WindowDictionary.ContainsKey("OpenPortfolioAddEdit"))
+                            {
+                                //open Window and store in Dictionary
+                                WindowDictionary.Add("OpenPortfolioAddEdit", new AddEditPortfolioWindow());
+                                WindowDictionary["OpenPortfolioAddEdit"].Show();
+                            }
+                            break;
+                        }
                     case OperatingCommandsEnum.CloseEtfDetail:
                         {
                             WindowDictionary["OpenEtfDetailWindow"].Close();
                             WindowDictionary.Remove("OpenEtfDetailWindow");
+                            break;
+                        }
+                    case OperatingCommandsEnum.ClosePortfolioAddEdit:
+                        {
+                            WindowDictionary["OpenPortfolioAddEdit"].Close();
+                            WindowDictionary.Remove("OpenPortfolioAddEdit");
                             break;
                         }
                     default: break;

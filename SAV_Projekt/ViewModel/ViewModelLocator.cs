@@ -44,6 +44,7 @@ namespace SAV_Projekt.ViewModel
 
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<EtfDetailViewModel>();
+            SimpleIoc.Default.Register<AddEditPortfolioViewModel>();
         }
 
         public MainViewModel Main
@@ -61,7 +62,14 @@ namespace SAV_Projekt.ViewModel
                 return ServiceLocator.Current.GetInstance<EtfDetailViewModel> ();
             }
         }
-        
+        public AddEditPortfolioViewModel AddEditPortfolio
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<AddEditPortfolioViewModel>();
+            }
+        }
+
         public static void Cleanup()
         {
             // TODO Clear the ViewModels
