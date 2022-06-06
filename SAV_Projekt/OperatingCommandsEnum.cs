@@ -13,5 +13,7 @@ namespace SAV_Projekt
         CloseEtfDetail,
         OpenPortfolioAddEdit,
         ClosePortfolioAddEdit,
+        OpenPortfolioEditFirst,
+        OpenPortfolioEditSecond,
     }
 }

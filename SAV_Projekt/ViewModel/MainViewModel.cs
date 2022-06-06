@@ -60,38 +60,8 @@ namespace SAV_Projekt.ViewModel
         public ICommand ShowEtfDetailCommand { get { return new RelayCommand<PortfolioEtf>(ShowEtfDetail); } }
         public ICommand ResetPortfolioComparisonCommand { get { return new RelayCommand(ResetPortfolioComparison); } }
         public ICommand CreatePortfolioCommand { get { return new RelayCommand(CreatePortfolio); } }
-
-        private void CreatePortfolio()
-        {
-            Messenger.Default.Send(OperatingCommandsEnum.OpenPortfolioAddEdit);
-            Messenger.Default.Send(new NotificationMessage<ObservableCollection<Etf>>(ETFs, OperatingCommandsEnum.OpenPortfolioAddEdit.ToString()));
-        }
-
-        private void ResetPortfolioComparison()
-        {
-            List<DateTime> minDates = new List<DateTime>();
-            if (ETFs != null)
-            {
-                foreach (var etf in SecondPortfolioToCompare.PortfolioEtfs)
-                {
-                    minDates.Add(etf.Etf.Values[0].Date);
-                }
-                foreach (var etf in FirstPortfolioToCompare.PortfolioEtfs)
-                {
-                    minDates.Add(etf.MinDate);
-                }
-                minDates.Sort();
-                minDates.Reverse();
-                MinDate = minDates[0];
-                MaxDate = FirstPortfolioToCompare.PortfolioEtfs[0].Etf.Values[FirstPortfolioToCompare.PortfolioEtfs[0].Etf.Values.Count - 1].Date;
-            }
-        }
-
-        private void ShowEtfDetail(PortfolioEtf portfolioEtf)
-        {
-            Messenger.Default.Send(OperatingCommandsEnum.OpenEtfDetail);
-            Messenger.Default.Send(new NotificationMessage<Etf>(portfolioEtf.Etf, OperatingCommandsEnum.ShowEtfDetail.ToString()));
-        }
+        public ICommand EditFirstPortfolioCommand { get { return new RelayCommand(EditFirstPortfolio); } }
+        public ICommand EditSecondPortfolioCommand { get { return new RelayCommand(EditSecondPortfolio); } }
         private DateTime minDate;
         private DateTime maxDate;
         public DateTime MinDate
@@ -144,10 +114,65 @@ namespace SAV_Projekt.ViewModel
             InitValueGrowth(FirstPortfolioToDisplay);
 
         }
+        private void ResetPortfolioComparison()
+        {
+            List<DateTime> minDates = new List<DateTime>();
+            if (ETFs != null)
+            {
+                foreach (var etf in SecondPortfolioToCompare.PortfolioEtfs)
+                {
+                    minDates.Add(etf.Etf.Values[0].Date);
+                }
+                foreach (var etf in FirstPortfolioToCompare.PortfolioEtfs)
+                {
+                    minDates.Add(etf.MinDate);
+                }
+                minDates.Sort();
+                minDates.Reverse();
+                MinDate = minDates[0];
+                MaxDate = FirstPortfolioToCompare.PortfolioEtfs[0].Etf.Values[FirstPortfolioToCompare.PortfolioEtfs[0].Etf.Values.Count - 1].Date;
+            }
+        }
 
+        private void ShowEtfDetail(PortfolioEtf portfolioEtf)
+        {
+            Messenger.Default.Send(OperatingCommandsEnum.OpenEtfDetail);
+            Messenger.Default.Send(new NotificationMessage<Etf>(portfolioEtf.Etf, OperatingCommandsEnum.ShowEtfDetail.ToString()));
+        }
+        private void EditFirstPortfolio()
+        {
+            foreach(var entry in FirstPortfolioToCompare.PortfolioEtfs) 
+            {
+                entry.AvailableEtfs = ETFs;
+            }
+            Messenger.Default.Send(OperatingCommandsEnum.OpenPortfolioAddEdit);
+            Messenger.Default.Send(new NotificationMessage<Portfolio>(FirstPortfolioToCompare, OperatingCommandsEnum.OpenPortfolioEditFirst.ToString()));
+        }
+
+        private void EditSecondPortfolio()
+        {
+            foreach (var entry in SecondPortfolioToCompare.PortfolioEtfs)
+            {
+                entry.AvailableEtfs = ETFs;
+            }
+            Messenger.Default.Send(OperatingCommandsEnum.OpenPortfolioAddEdit);
+            Messenger.Default.Send(new NotificationMessage<Portfolio>(SecondPortfolioToCompare, OperatingCommandsEnum.OpenPortfolioEditSecond.ToString()));
+        }
+
+        private void CreatePortfolio()
+        {
+            Messenger.Default.Send(OperatingCommandsEnum.OpenPortfolioAddEdit);
+            Messenger.Default.Send(new NotificationMessage<ObservableCollection<Etf>>(ETFs, OperatingCommandsEnum.OpenPortfolioAddEdit.ToString()));
+        }
         private void NotificationMessageReceived(string notification, Portfolio content)
         {
-            AllPortfolios.Add(content);
+            switch (notification)
+            {
+                case "0": AllPortfolios.Add(content); break;
+                case "1": FirstPortfolioToCompare = content; break;
+                case "2": SecondPortfolioToCompare = content; break;
+                default: break;
+            }
         }
 
         private void InitValueGrowth(SeriesCollection portfolio)

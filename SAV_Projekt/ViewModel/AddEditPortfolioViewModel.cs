@@ -21,6 +21,7 @@ namespace SAV_Projekt.ViewModel
         private static string nameError = "Portfolio muss validen Namen haben!";
         public Portfolio PortfolioToCreateEdit { get; set; }
         public string PortfolioName { get; set; }
+        public int EditFirstOrSecond { get; set; }
         public string PercentErrorMessage { get; set; }
         public bool SubmitEnabled { get; set; } = false;
         public Etf SelectedEtf { get; set; }
@@ -87,14 +88,41 @@ namespace SAV_Projekt.ViewModel
             PortfolioToCreateEdit.PortfolioEtfs = SelectedEtfValues;
             PortfolioToCreateEdit.Name = PortfolioName;
             Messenger.Default.Send(OperatingCommandsEnum.ClosePortfolioAddEdit);
-            Messenger.Default.Send(new NotificationMessage<Portfolio>(PortfolioToCreateEdit, OperatingCommandsEnum.ClosePortfolioAddEdit.ToString()));
+            Messenger.Default.Send(new NotificationMessage<Portfolio>(PortfolioToCreateEdit, EditFirstOrSecond.ToString()));
         }
 
         public AddEditPortfolioViewModel()
         {
             Messenger.Default.Register<NotificationMessage<ObservableCollection<Etf>>>(this, (c) => ETfsReceived(c.Notification, c.Content));
+            Messenger.Default.Register<NotificationMessage<Portfolio>>(this, (c) => PortfolioReceived(c.Notification, c.Content));
 
         }
+
+        private void PortfolioReceived(string notification, Portfolio content)
+        {
+            if(notification == OperatingCommandsEnum.OpenPortfolioEditFirst.ToString())
+            {
+                EditFirstOrSecond = 1;
+            }
+            else if (notification == OperatingCommandsEnum.OpenPortfolioEditSecond.ToString())
+            {
+                EditFirstOrSecond = 2;
+            }
+            else
+            {
+                EditFirstOrSecond = 0;
+            }
+            PortfolioToCreateEdit = new Portfolio()
+            {
+                PortfolioEtfs = new ObservableCollection<PortfolioEtf>()
+            };
+            PortfolioName = content.Name;
+            SelectedEtfValues = content.PortfolioEtfs;
+            RaisePropertyChanged("PortfolioName");
+            RaisePropertyChanged("SelectedEtfValues");
+            LoadPieChart();
+        }
+
         private void ETfsReceived(string message, ObservableCollection<Etf> EtfCollection)
         {
             AvailableEtfs = EtfCollection;
@@ -109,18 +137,6 @@ namespace SAV_Projekt.ViewModel
                 AvailableEtfs = EtfCollection,
                 Etf = EtfCollection[0],
                 PercentageOfPortfolio = 0.3
-            });
-            SelectedEtfValues.Add(new PortfolioEtf()
-            {
-                AvailableEtfs = EtfCollection,
-                Etf = EtfCollection[0],
-                PercentageOfPortfolio = 0.2
-            });
-            SelectedEtfValues.Add(new PortfolioEtf()
-            {
-                AvailableEtfs = EtfCollection,
-                Etf = EtfCollection[0],
-                PercentageOfPortfolio = 0.5
             });
             LoadPieChart();
             RaisePropertyChanged("SelectedEtfValues");

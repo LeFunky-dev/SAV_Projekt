@@ -113,36 +113,70 @@
                     <RowDefinition Height="0.5*"></RowDefinition>
                     <RowDefinition Height="0.5*"></RowDefinition>
                 </Grid.RowDefinitions>
-                <StackPanel Grid.Row="0" Margin="10,10,10,10" VerticalAlignment="Top">
-                    <TextBlock Text="{Binding FirstPortfolioToCompare.Name}"></TextBlock>
-                    <ListBox ItemsSource="{Binding FirstPortfolioToCompare.PortfolioEtfs}">
+                <Grid Grid.Row="0" Margin="10,10,10,10" VerticalAlignment="Top">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="0.1*"></RowDefinition>
+                        <RowDefinition Height="0.1*"></RowDefinition>
+                        <RowDefinition Height="0.8*"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.7*"></ColumnDefinition>
+                        <ColumnDefinition Width="0.3*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Margin="0,10,10,10" FontWeight="Bold" FontSize="20"  Text="{Binding FirstPortfolioToCompare.Name}"></TextBlock>
+                    <wpfui:Button Grid.Row="0" Grid.Column="1" HoverBackground="#E6A519" Background="#FFB81C" Foreground="Black" Command="{Binding EditFirstPortfolioCommand}">Portfolio bearbeiten</wpfui:Button>
+                    <TextBlock Grid.Row="1" Grid.Column="0" Margin="0,10,0,10">ETF:</TextBlock>
+                    <TextBlock Grid.Row="1" Grid.Column="1" Margin="0,10,10,10">Anteil:</TextBlock>
+                    <ListView Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding FirstPortfolioToCompare.PortfolioEtfs}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="0.8*"></ColumnDefinition>
+                                        <ColumnDefinition Width="0.1*"></ColumnDefinition>
+                                        <ColumnDefinition Width="0.1*"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="{Binding Etf.Name}" Margin="0,10,10,10"></TextBlock>
+                                    <TextBlock Grid.Column="1" Text="{Binding PercentageOfPortfolio}" Margin="0,10,10,10"></TextBlock>
+                                    <Button Grid.Column="2" Command="{Binding DataContext.ShowEtfDetailCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBox}}}"
+                                    CommandParameter="{Binding }" MinWidth="100" Height="40">Detailansicht</Button>
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Grid>
+                <Grid Grid.Row="1" Margin="10,10,10,10" VerticalAlignment="Top">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="0.1*"></RowDefinition>
+                        <RowDefinition Height="0.1*"></RowDefinition>
+                        <RowDefinition Height="0.8*"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.7*"></ColumnDefinition>
+                        <ColumnDefinition Width="0.3*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Margin="0,10,10,10" FontWeight="Bold" FontSize="20" Text="{Binding SecondPortfolioToCompare.Name}"></TextBlock>
+                    <wpfui:Button Grid.Row="0" Grid.Column="1" HoverBackground="#E6A519" Background="#FFB81C" Foreground="Black" Command="{Binding EditSecondPortfolioCommand}">Portfolio bearbeiten</wpfui:Button>
+                    <TextBlock Grid.Row="1" Grid.Column="0" Margin="0,10,0,10">ETF:</TextBlock>
+                    <TextBlock Grid.Row="1" Grid.Column="1" Margin="0,10,10,10">Anteil:</TextBlock>
+                    <ListView Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding SecondPortfolioToCompare.PortfolioEtfs}">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{Binding Etf.Name}" Margin="10,10,10,10"></TextBlock>
-                                    <TextBlock Text="{Binding PercentageOfPortfolio}" Margin="10,10,10,10"></TextBlock>
-                                    <Button Command="{Binding DataContext.ShowEtfDetailCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBox}}}"
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="0.8*"></ColumnDefinition>
+                                        <ColumnDefinition Width="0.1*"></ColumnDefinition>
+                                        <ColumnDefinition Width="0.1*"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="{Binding Etf.Name}" Margin="0,10,10,10"></TextBlock>
+                                    <TextBlock Grid.Column="1" Text="{Binding PercentageOfPortfolio}" Margin="00,10,10,10"></TextBlock>
+                                    <Button Grid.Column="2" Command="{Binding DataContext.ShowEtfDetailCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBox}}}"
                                     CommandParameter="{Binding }" MinWidth="100" Height="40">Detailansicht</Button>
-                                </StackPanel>
+                                </Grid>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
-                    </ListBox>
-                </StackPanel>
-                <StackPanel Grid.Row="1" Margin="10,10,10,10" VerticalAlignment="Top">
-                    <TextBlock Text="{Binding SecondPortfolioToCompare.Name}"></TextBlock>
-                    <ListBox ItemsSource="{Binding SecondPortfolioToCompare.PortfolioEtfs}">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{Binding Etf.Name}" Margin="10,10,10,10"></TextBlock>
-                                    <TextBlock Text="{Binding PercentageOfPortfolio}" Margin="10,10,10,10"></TextBlock>
-                                    <Button Command="{Binding DataContext.ShowEtfDetailCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBox}}}"
-                                    CommandParameter="{Binding }" MinWidth="100" Height="40">Detailansicht</Button>
-                                </StackPanel>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </StackPanel>
+                    </ListView>
+                </Grid>
 
             </Grid>
         </Grid>
