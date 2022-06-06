@@ -18,16 +18,38 @@ namespace SAV_Projekt.ViewModel
     public class AddEditPortfolioViewModel : ViewModelBase
     {
         private static string percentError = "Die Felder müssen insgesamt 1 ergeben!";
+        private static string nameError = "Portfolio muss validen Namen haben!";
         public Portfolio PortfolioToCreateEdit { get; set; }
         public string PortfolioName { get; set; }
         public string PercentErrorMessage { get; set; }
-        public bool SubmitEnabled { get; set; } = true;
+        public bool SubmitEnabled { get; set; } = false;
         public Etf SelectedEtf { get; set; }
         public ObservableCollection<Etf> AvailableEtfs { get; set; }
         public ObservableCollection<PortfolioEtf> SelectedEtfValues { get; set; }
 
         public ICommand SubmitPortfolioCommand { get { return new RelayCommand(SubmitPortfolio); } }
         public ICommand SelectionChangedCommand { get { return new RelayCommand(SelectionChanged); } }
+        public ICommand AddEtfCommand { get { return new RelayCommand(AddEtf); } }
+        public ICommand DeleteEtfCommand { get { return new RelayCommand<PortfolioEtf>(DeleteEtf); } }
+
+        private void DeleteEtf(PortfolioEtf etf)
+        {
+            SelectedEtfValues.Remove(etf);
+            RaisePropertyChanged("SelectedEtfValues");
+        }
+
+        private void AddEtf()
+        {
+            SelectedEtfValues.Add(new PortfolioEtf()
+            {
+                AvailableEtfs = AvailableEtfs,
+                Etf = AvailableEtfs[0],
+                PercentageOfPortfolio = 0.3
+            });
+            LoadPieChart();
+            RaisePropertyChanged("SelectedEtfValues");
+            SelectionChanged();
+        }
 
         private void SelectionChanged()
         {
@@ -37,7 +59,7 @@ namespace SAV_Projekt.ViewModel
                 
                 sum += entry.PercentageOfPortfolio;
             }
-            if(sum == 1.0)
+            if(sum == 1.0 )
             {
                 SubmitEnabled = true;
                 PercentErrorMessage = "";
@@ -46,6 +68,11 @@ namespace SAV_Projekt.ViewModel
             {
                 SubmitEnabled = false;
                 PercentErrorMessage = percentError;
+            }
+            if(PortfolioName == null || PortfolioName == "")
+            {
+                SubmitEnabled = false;
+                PercentErrorMessage += "\n" + nameError;
             }
             RaisePropertyChanged("PercentErrorMessage");
             RaisePropertyChanged("SubmitEnabled");
