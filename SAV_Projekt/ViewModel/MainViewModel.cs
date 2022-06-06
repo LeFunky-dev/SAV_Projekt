@@ -379,9 +379,6 @@ namespace SAV_Projekt.ViewModel
                             }
                            
                         }
-
-
-
                     }
                 }
             }
@@ -395,9 +392,7 @@ namespace SAV_Projekt.ViewModel
                 MinDate = minDates[0] < MinDate ? minDates[0] : MinDate;
                 MaxDate = ETFs[0].Values[ETFs[0].Values.Count - 1].Date;
             }
-
             RaisePropertyChanged("FirstPortfolioToDisplay");
-            //percentage calc
         }
     }
 }
