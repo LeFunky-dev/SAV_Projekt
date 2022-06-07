@@ -67,24 +67,37 @@
                     <Button Grid.Row="0" Grid.Column="1" Margin="20,0,20,0" Width="100" Command="{Binding ResetPortfolioComparisonCommand}" VerticalAlignment="Center">Reset</Button>
                 </StackPanel>
             </StackPanel>
-            <StackPanel  Grid.Row="1">
-                <StackPanel Orientation="Horizontal" Margin="10,0,10,0">
-                    <lvc:CartesianChart x:Name="chart1" Series="{Binding FirstPortfolioToDisplay}" LegendLocation="Right" Height="600" Width="1300" HorizontalAlignment="left" Margin="10,10,10,10"
+            <Grid  Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="0.7*"></RowDefinition>
+                    <RowDefinition Height="0.3*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <lvc:CartesianChart Grid.Row="0" x:Name="chart1" Series="{Binding FirstPortfolioToDisplay}" LegendLocation="Right" Height="600" Width="1300" HorizontalAlignment="left" Margin="10,10,10,10"
                                 VerticalAlignment="Top">
-                        <lvc:CartesianChart.AxisX>
-                            <lvc:Axis Title="Month" LabelFormatter="{Binding Formatter}" MinValue="{Binding MinDateDouble}" MaxValue="{Binding MaxDateDouble}" Sections="{Binding SectionCollection}">
-                            </lvc:Axis>
-                        </lvc:CartesianChart.AxisX>
-                    </lvc:CartesianChart>
-                </StackPanel>
-                <StackPanel Margin="20,0,10,10">
-                    <Label Padding="5,0,0,5" FontWeight="Bold" Foreground="Black">Wertentwicklung:</Label>
-                    <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Horizontal" Margin="5,0,0,5">
+                    <lvc:CartesianChart.AxisX>
+                        <lvc:Axis Title="Month" LabelFormatter="{Binding Formatter}" MinValue="{Binding MinDateDouble}" MaxValue="{Binding MaxDateDouble}" Sections="{Binding SectionCollection}">
+                        </lvc:Axis>
+                    </lvc:CartesianChart.AxisX>
+                </lvc:CartesianChart>
+
+                <Grid Margin="20,0,10,10" Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.3*"></ColumnDefinition>
+                        <ColumnDefinition Width="0.35*"></ColumnDefinition>
+                        <ColumnDefinition Width="0.35*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="0.1*"></RowDefinition>
+                        <RowDefinition Height="0.1*"></RowDefinition>
+                        <RowDefinition Height="0.8*"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Label Grid.Column="0" Grid.Row="0" Padding="5,0,0,5" FontWeight="Bold" Foreground="Black">Wertentwicklung:</Label>
+                    <StackPanel Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,0,0,5" Orientation="Horizontal">
                         <Label Padding="5,0,0,0" Width="60" BorderBrush="Black" BorderThickness="1" Foreground="Black">Zeitraum</Label>
                         <Label Padding="5,0,0,0" Width="100" BorderBrush="Black" BorderThickness="1" Foreground="Black" Content="{Binding FirstPortfolioToCompare.Name}"></Label>
                         <Label Padding="5,0,0,0" Width="100" BorderBrush="Black" BorderThickness="1" Foreground="Black" Content="{Binding SecondPortfolioToCompare.Name}"></Label>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.ColumnSpan="2">
                         <ListView HorizontalAlignment="Left" VerticalAlignment="Top" ItemsSource="{Binding ValueGrowthSecond}" Margin="0,0,0,0">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
@@ -105,9 +118,57 @@
                             </ListView.ItemTemplate>
                         </ListView>
                     </StackPanel>
+                    <Grid Grid.RowSpan="3" Grid.Column="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.4*"></ColumnDefinition>
+                            <ColumnDefinition Width="0.2*"></ColumnDefinition>
+                            <ColumnDefinition Width="0.1*"></ColumnDefinition>
+                            <ColumnDefinition Width="0.4*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="0.40*"></RowDefinition>
+                            <RowDefinition Height="0.2*"></RowDefinition>
+                            <RowDefinition Height="0.2*"></RowDefinition>
+                            <RowDefinition Height="0.2*"></RowDefinition>
+                        </Grid.RowDefinitions>
 
-                </StackPanel>
-            </StackPanel>
+                        <Label Grid.Row="1" Grid.Column="0" Foreground="Black" FontSize="16" FontWeight="DemiBold" VerticalContentAlignment="Center">Investiertes Geld:</Label>
+                        <Label Grid.Row="2" Grid.Column="0" Foreground="Black" FontSize="16" FontWeight="DemiBold" VerticalContentAlignment="Center">Kursumsatz:</Label>
+                        <Label Grid.Row="3" Grid.Column="0" Foreground="Black" FontSize="16" FontWeight="DemiBold" VerticalContentAlignment="Center">Kursgewinn:</Label>
+                        <Label Grid.Row="0" Grid.ColumnSpan="2" Content="{Binding FirstPortfolioToCompare.Name}" Foreground="Black" FontSize="20" FontWeight="Bold" VerticalContentAlignment="Center" HorizontalAlignment="Left"></Label>
+                        <Label Grid.Row="1" Grid.Column="1" Content="{Binding FirstPortfolioToCompare.Investments}" Foreground="Black" FontSize="16" FontWeight="DemiBold" VerticalContentAlignment="Center" HorizontalAlignment="Right"></Label>
+                        <Label Grid.Row="2" Grid.Column="1" Content="{Binding FirstPortfolioToCompare.PriceGain}" Foreground="Black" FontSize="16" FontWeight="DemiBold" VerticalContentAlignment="Center" HorizontalAlignment="Right"></Label>
+                        <Label Grid.Row="3" Grid.Column="1" Content="{Binding FirstPortfolioToCompare.Profit}" Foreground="Black" FontSize="16" FontWeight="DemiBold" VerticalContentAlignment="Center" HorizontalAlignment="Right"></Label>
+                        <Label Grid.Row="1" Grid.Column="2" Foreground="Black" FontSize="16" FontWeight="DemiBold" VerticalContentAlignment="Center" Margin="5,0,0,0">€</Label>
+                        <Label Grid.Row="2" Grid.Column="2" Foreground="Black" FontSize="16" FontWeight="DemiBold" VerticalContentAlignment="Center" Margin="5,0,0,0">€</Label>
+                        <Label Grid.Row="3" Grid.Column="2" Foreground="Black" FontSize="16" FontWeight="DemiBold" VerticalContentAlignment="Center" Margin="5,0,0,0">€</Label>
+                    </Grid>
+                    <Grid Grid.RowSpan="3" Grid.Column="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.4*"></ColumnDefinition>
+                            <ColumnDefinition Width="0.2*"></ColumnDefinition>
+                            <ColumnDefinition Width="0.1*"></ColumnDefinition>
+                            <ColumnDefinition Width="0.4*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="0.40*"></RowDefinition>
+                            <RowDefinition Height="0.2*"></RowDefinition>
+                            <RowDefinition Height="0.2*"></RowDefinition>
+                            <RowDefinition Height="0.2*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Label Grid.Row="1" Grid.Column="0" Foreground="Black" FontSize="16" FontWeight="DemiBold" VerticalContentAlignment="Center">Investiertes Geld:</Label>
+                        <Label Grid.Row="2" Grid.Column="0" Foreground="Black" FontSize="16" FontWeight="DemiBold" VerticalContentAlignment="Center">Kursumsatz:</Label>
+                        <Label Grid.Row="3" Grid.Column="0" Foreground="Black" FontSize="16" FontWeight="DemiBold" VerticalContentAlignment="Center">Kursgewinn:</Label>
+                        <Label Grid.Row="0" Grid.ColumnSpan="2" Content="{Binding SecondPortfolioToCompare.Name,StringFormat=C}" Foreground="Black" FontSize="20" FontWeight="Bold" VerticalContentAlignment="Center" HorizontalAlignment="Left"></Label>
+                        <Label Grid.Row="1" Grid.Column="1" Content="{Binding SecondPortfolioToCompare.Investments}" Foreground="Black" FontSize="16" FontWeight="DemiBold" VerticalContentAlignment="Center" HorizontalAlignment="Right"></Label>
+                        <Label Grid.Row="2" Grid.Column="1" Content="{Binding SecondPortfolioToCompare.PriceGain}" Foreground="Black" FontSize="16" FontWeight="DemiBold" VerticalContentAlignment="Center"  HorizontalAlignment="Right"></Label>
+                        <Label Grid.Row="3" Grid.Column="1" Content="{Binding SecondPortfolioToCompare.Profit}" Foreground="Black" FontSize="16" FontWeight="DemiBold" VerticalContentAlignment="Center"  HorizontalAlignment="Right"></Label>
+                        <Label Grid.Row="1" Grid.Column="2" Foreground="Black" FontSize="16" FontWeight="DemiBold" VerticalContentAlignment="Center" Margin="5,0,0,0">€</Label>
+                        <Label Grid.Row="2" Grid.Column="2" Foreground="Black" FontSize="16" FontWeight="DemiBold" VerticalContentAlignment="Center" Margin="5,0,0,0">€</Label>
+                        <Label Grid.Row="3" Grid.Column="2" Foreground="Black" FontSize="16" FontWeight="DemiBold" VerticalContentAlignment="Center" Margin="5,0,0,0">€</Label>
+                    </Grid>
+                </Grid>
+            </Grid>
             <Grid Grid.Column="1" Grid.Row="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="0.5*"></RowDefinition>

@@ -129,19 +129,19 @@ namespace SAV_Projekt.ViewModel
 
         private void TransactionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            CalcMetrics(FirstPortfolioToCompare);
-            CalcMetrics(SecondPortfolioToCompare);
+            CalcMetrics(FirstPortfolioToCompare,true);
+            CalcMetrics(SecondPortfolioToCompare, false);
         }
 
-        private void CalcMetrics(Portfolio portfolio)
+        private void CalcMetrics(Portfolio portfolio, bool isFirst)
         {
             double startVal = 0;
-            double investments = 0;
+            double investments = 0.0;
             foreach (var transaction in Transactions)
             {
-                investments += transaction.Value;
                 if (transaction != null)
                 {
+                    investments += transaction.Value;
                     foreach (var entry in portfolio.PortfolioEtfs)
                     {
                         bool found = false;
@@ -163,9 +163,17 @@ namespace SAV_Projekt.ViewModel
                     }
                 }
             }
-            portfolio.PriceGain = startVal;
-            portfolio.Profit = startVal - investments;
-            portfolio.Investments = investments;
+            portfolio.PriceGain = Math.Round(startVal,2,MidpointRounding.ToEven);
+            portfolio.Profit = Math.Round(startVal - investments,2,MidpointRounding.ToEven);
+            portfolio.Investments = Math.Round(investments/1.0,2,MidpointRounding.ToEven);
+            if(isFirst)
+            {
+                RaisePropertyChanged("FirstPortfolioToCompare");
+            }
+            else
+            {
+                RaisePropertyChanged("SecondPortfolioToCompare");
+            }
         }
 
         private void ModifyTransaction()

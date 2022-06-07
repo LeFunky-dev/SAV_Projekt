@@ -32,7 +32,7 @@
                             <ColumnDefinition Width="0.04*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
                         <Label Grid.Column="0" FontSize="14" Foreground="Black" VerticalAlignment="Center">Am</Label>
-                        <DatePicker Grid.Column="1" Foreground="Black" Margin="0,0,0,0" SelectedDate="{Binding Date}" 
+                        <DatePicker Grid.Column="1" Foreground="Black" Margin="0,0,0,0" SelectedDate="{Binding Date, UpdateSourceTrigger=PropertyChanged}" 
                                     DisplayDateEnd="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:AddTransactionWindow}},Path=DataContext.MaxDate}" 
                                     DisplayDateStart="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:AddTransactionWindow}},Path=DataContext.MinDate}"
                                     VerticalAlignment="Center">
@@ -43,7 +43,7 @@
                                 </Style>
                             </DatePicker.Resources>
                             <i:Interaction.Triggers>
-                                <i:EventTrigger EventName="TextChanged">
+                                <i:EventTrigger EventName="SelectedDateChanged">
                                     <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:AddTransactionWindow}}, Path=DataContext.SelectionChangedCommand}"></i:InvokeCommandAction>
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
