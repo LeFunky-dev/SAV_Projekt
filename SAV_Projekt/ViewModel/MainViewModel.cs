@@ -9,6 +9,7 @@ using SAV_Projekt.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
@@ -21,6 +22,9 @@ namespace SAV_Projekt.ViewModel
     public class MainViewModel : ViewModelBase
     {
         private const string targetDirectory = @"..\..\..\ETF_Data\";
+        public ObservableCollection<EtfValue> Transactions { get; set; }
+
+        public SectionsCollection SectionCollection { get; set; }
         public ObservableCollection<Portfolio> AllPortfolios { get; set; }
         public ObservableCollection<ValueGrowth> ValueGrowthFirst { get; set; }
         public ObservableCollection<ValueGrowth> ValueGrowthSecond { get; set; }
@@ -62,6 +66,11 @@ namespace SAV_Projekt.ViewModel
         public ICommand CreatePortfolioCommand { get { return new RelayCommand(CreatePortfolio); } }
         public ICommand EditFirstPortfolioCommand { get { return new RelayCommand(EditFirstPortfolio); } }
         public ICommand EditSecondPortfolioCommand { get { return new RelayCommand(EditSecondPortfolio); } }
+        public ICommand ModifyTransactionsCommand { get { return new RelayCommand(ModifyTransaction); } }
+
+
+
+
         private DateTime minDate;
         private DateTime maxDate;
         public DateTime MinDate
@@ -108,11 +117,65 @@ namespace SAV_Projekt.ViewModel
             AllPortfolios = new ObservableCollection<Portfolio>();
             ValueGrowthFirst = new ObservableCollection<ValueGrowth>();
             ValueGrowthSecond = new ObservableCollection<ValueGrowth>();
+            Transactions = new ObservableCollection<EtfValue>();
+            SectionCollection = new SectionsCollection();
+            Transactions.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(TransactionChanged);
             Messenger.Default.Register<NotificationMessage<Portfolio>>(this, (c) => NotificationMessageReceived(c.Notification, c.Content));
             InitValues();
             InitPortfolios();
             InitValueGrowth(FirstPortfolioToDisplay);
 
+        }
+
+        private void TransactionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            CalcMetrics(FirstPortfolioToCompare);
+            CalcMetrics(SecondPortfolioToCompare);
+        }
+
+        private void CalcMetrics(Portfolio portfolio)
+        {
+            double startVal = 0;
+            double investments = 0;
+            foreach (var transaction in Transactions)
+            {
+                investments += transaction.Value;
+                if (transaction != null)
+                {
+                    foreach (var entry in portfolio.PortfolioEtfs)
+                    {
+                        bool found = false;
+                        double startingPercent = 0;
+                        double absoluteVal = transaction.Value * entry.PercentageOfPortfolio;
+                        foreach (var value in entry.Etf.Values)
+                        {
+                            if (value.Date == transaction.Date && !found)
+                            {
+                                startingPercent = value.Value;
+                                found = true;
+                            }
+                            if (found && value == entry.Etf.Values[entry.Etf.Values.Count - 1])
+                            {
+                                absoluteVal *= (value.Value - startingPercent) / 100;
+                            }
+                        }
+                        startVal += absoluteVal;
+                    }
+                }
+            }
+            portfolio.PriceGain = startVal;
+            portfolio.Profit = startVal - investments;
+            portfolio.Investments = investments;
+        }
+
+        private void ModifyTransaction()
+        {
+            ObservableCollection<DateTime> dates = new ObservableCollection<DateTime>();
+            dates.Add(minDate);
+            dates.Add(maxDate);
+            Messenger.Default.Send(OperatingCommandsEnum.OpenAddTransaction);
+            Messenger.Default.Send(new NotificationMessage<ObservableCollection<EtfValue>>(Transactions, OperatingCommandsEnum.OpenAddTransaction.ToString()));
+            Messenger.Default.Send(new NotificationMessage<ObservableCollection<DateTime>>(dates, OperatingCommandsEnum.OpenAddTransaction.ToString()));
         }
         private void ResetPortfolioComparison()
         {
@@ -141,7 +204,7 @@ namespace SAV_Projekt.ViewModel
         }
         private void EditFirstPortfolio()
         {
-            foreach(var entry in FirstPortfolioToCompare.PortfolioEtfs) 
+            foreach (var entry in FirstPortfolioToCompare.PortfolioEtfs)
             {
                 entry.AvailableEtfs = ETFs;
             }

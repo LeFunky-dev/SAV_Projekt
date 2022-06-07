@@ -17,8 +17,8 @@ namespace SAV_Projekt.ViewModel
 {
     public class AddEditPortfolioViewModel : ViewModelBase
     {
-        private static string percentError = "Die Felder müssen insgesamt 1 ergeben!";
-        private static string nameError = "Portfolio muss validen Namen haben!";
+        private readonly string percentError = "Die Felder müssen insgesamt 1 ergeben!";
+        private readonly string nameError = "Portfolio muss validen Namen haben!";
         public Portfolio PortfolioToCreateEdit { get; set; }
         public string PortfolioName { get; set; }
         public int EditFirstOrSecond { get; set; }

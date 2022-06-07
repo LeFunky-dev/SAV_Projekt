@@ -89,10 +89,15 @@
     <Compile Include="Model\ValueGrowth.cs" />
     <Compile Include="OperatingCommandsEnum.cs" />
     <Compile Include="ViewModel\AddEditPortfolioViewModel.cs" />
+    <Compile Include="ViewModel\AddTransactionViewModel.cs" />
     <Compile Include="ViewModel\EtfDetailViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Page Include="View\AddEditPortfolioWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\AddTransactionWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -110,6 +115,9 @@
     </Compile>
     <Compile Include="View\AddEditPortfolioWindow.xaml.cs">
       <DependentUpon>AddEditPortfolioWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\AddTransactionWindow.xaml.cs">
+      <DependentUpon>AddTransactionWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\EtfDetailWindow.xaml.cs">
       <DependentUpon>EtfDetailWindow.xaml</DependentUpon>

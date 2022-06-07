@@ -22,7 +22,7 @@
             </Grid.RowDefinitions>
             <StackPanel Grid.Column="0" Grid.Row="0">
                 <StackPanel Orientation="Horizontal">
-                    <Button Margin="10,10,10,0" Width="350" Height="40" >Transaktionen für alle Portfolios</Button>
+                    <Button Margin="10,10,10,0" Width="350" Height="40" Command="{Binding ModifyTransactionsCommand}">Transaktionen für alle Portfolios</Button>
                     <Button Margin="10,10,10,0" Width="350" Height="40" Command="{Binding CreatePortfolioCommand}">Neues Portfolio erstellen</Button>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="10,10,10,10">
@@ -69,10 +69,10 @@
             </StackPanel>
             <StackPanel  Grid.Row="1">
                 <StackPanel Orientation="Horizontal" Margin="10,0,10,0">
-                    <lvc:CartesianChart Name="ETF" Series="{Binding FirstPortfolioToDisplay}" LegendLocation="Right" Height="600" Width="1300" HorizontalAlignment="left" Margin="10,10,10,10"
+                    <lvc:CartesianChart x:Name="chart1" Series="{Binding FirstPortfolioToDisplay}" LegendLocation="Right" Height="600" Width="1300" HorizontalAlignment="left" Margin="10,10,10,10"
                                 VerticalAlignment="Top">
                         <lvc:CartesianChart.AxisX>
-                            <lvc:Axis Title="Month" LabelFormatter="{Binding Formatter}" MinValue="{Binding MinDateDouble}" MaxValue="{Binding MaxDateDouble}">
+                            <lvc:Axis Title="Month" LabelFormatter="{Binding Formatter}" MinValue="{Binding MinDateDouble}" MaxValue="{Binding MaxDateDouble}" Sections="{Binding SectionCollection}">
                             </lvc:Axis>
                         </lvc:CartesianChart.AxisX>
                     </lvc:CartesianChart>

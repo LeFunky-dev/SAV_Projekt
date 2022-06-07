@@ -11,6 +11,8 @@ namespace SAV_Projekt.Model
     {
         public string Name { get; set; }
         public ObservableCollection<PortfolioEtf> PortfolioEtfs { get; set; }
-
+        public double Profit { get; set; }
+        public double PriceGain { get; set; }
+        public double Investments { get; set; }
     }
 }

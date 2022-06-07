@@ -45,6 +45,7 @@ namespace SAV_Projekt.ViewModel
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<EtfDetailViewModel>();
             SimpleIoc.Default.Register<AddEditPortfolioViewModel>();
+            SimpleIoc.Default.Register<AddTransactionViewModel>();
         }
 
         public MainViewModel Main
@@ -69,7 +70,13 @@ namespace SAV_Projekt.ViewModel
                 return ServiceLocator.Current.GetInstance<AddEditPortfolioViewModel>();
             }
         }
-
+        public AddTransactionViewModel AddTransaction
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<AddTransactionViewModel> ();
+            }
+        }
         public static void Cleanup()
         {
             // TODO Clear the ViewModels

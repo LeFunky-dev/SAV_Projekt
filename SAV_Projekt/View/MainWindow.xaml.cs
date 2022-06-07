@@ -1,4 +1,6 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
+using LiveCharts.Helpers;
+using LiveCharts.Wpf;
 using SAV_Projekt.View;
 using System;
 using System.Collections.Generic;
@@ -37,7 +39,6 @@ namespace SAV_Projekt
                         {
                             if (!WindowDictionary.ContainsKey("OpenEtfDetailWindow"))
                             {
-                                //open Window and store in Dictionary
                                 WindowDictionary.Add("OpenEtfDetailWindow", new EtfDetailWindow());
                                 WindowDictionary["OpenEtfDetailWindow"].Show();
                             }
@@ -47,9 +48,17 @@ namespace SAV_Projekt
                         {
                             if (!WindowDictionary.ContainsKey("OpenPortfolioAddEdit"))
                             {
-                                //open Window and store in Dictionary
                                 WindowDictionary.Add("OpenPortfolioAddEdit", new AddEditPortfolioWindow());
                                 WindowDictionary["OpenPortfolioAddEdit"].Show();
+                            }
+                            break;
+                        }
+                    case OperatingCommandsEnum.OpenAddTransaction:
+                        {
+                            if (!WindowDictionary.ContainsKey("OpenAddTransaction"))
+                            {
+                                WindowDictionary.Add("OpenAddTransaction", new AddTransactionWindow());
+                                WindowDictionary["OpenAddTransaction"].Show();
                             }
                             break;
                         }
@@ -57,6 +66,12 @@ namespace SAV_Projekt
                         {
                             WindowDictionary["OpenEtfDetailWindow"].Close();
                             WindowDictionary.Remove("OpenEtfDetailWindow");
+                            break;
+                        }
+                    case OperatingCommandsEnum.CloseAddTransaction:
+                        {
+                            WindowDictionary["OpenAddTransaction"].Close();
+                            WindowDictionary.Remove("OpenAddTransaction");
                             break;
                         }
                     case OperatingCommandsEnum.ClosePortfolioAddEdit:

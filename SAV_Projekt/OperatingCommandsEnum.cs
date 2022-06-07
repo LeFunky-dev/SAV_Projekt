@@ -15,5 +15,7 @@ namespace SAV_Projekt
         ClosePortfolioAddEdit,
         OpenPortfolioEditFirst,
         OpenPortfolioEditSecond,
+        OpenAddTransaction,
+        CloseAddTransaction
     }
 }
