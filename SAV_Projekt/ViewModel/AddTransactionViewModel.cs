@@ -31,7 +31,7 @@ namespace SAV_Projekt.ViewModel
         {
             Transactions.Add(new EtfValue()
             {
-                Date = DateTime.Now,
+                Date = MinDate,
                 Value = 10000,
             });
             RaisePropertyChanged("Transactions");

@@ -117,6 +117,7 @@ namespace SAV_Projekt.ViewModel
                 PortfolioEtfs = new ObservableCollection<PortfolioEtf>()
             };
             PortfolioName = content.Name;
+            AvailableEtfs = content.PortfolioEtfs.FirstOrDefault().AvailableEtfs;
             SelectedEtfValues = content.PortfolioEtfs;
             RaisePropertyChanged("PortfolioName");
             RaisePropertyChanged("SelectedEtfValues");

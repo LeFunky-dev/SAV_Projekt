@@ -331,6 +331,7 @@ namespace SAV_Projekt.ViewModel
             {
                 Etf = ETFs[9],
                 MinDate = ETFs[9].Values[0].Date,
+                AvailableEtfs = ETFs,
                 MaxDate = ETFs[9].Values[ETFs[9].Values.Count - 1].Date,
                 PercentageOfPortfolio = 0.05
             });
@@ -338,6 +339,7 @@ namespace SAV_Projekt.ViewModel
             {
                 Etf = ETFs[2],
                 MinDate = ETFs[2].Values[0].Date,
+                AvailableEtfs = ETFs,
                 MaxDate = ETFs[2].Values[ETFs[2].Values.Count - 1].Date,
                 PercentageOfPortfolio = 0.95
             });
