@@ -317,14 +317,14 @@ namespace SAV_Projekt.ViewModel
                 Etf = ETFs[0],
                 MinDate = ETFs[0].Values[0].Date,
                 MaxDate = ETFs[0].Values[ETFs[0].Values.Count - 1].Date,
-                PercentageOfPortfolio = 0.7
+                PercentageOfPortfolio = 0.3
             });
             Portfolio7030.PortfolioEtfs.Add(new PortfolioEtf()
             {
                 Etf = ETFs[4],
                 MinDate = ETFs[4].Values[0].Date,
                 MaxDate = ETFs[4].Values[ETFs[4].Values.Count - 1].Date,
-                PercentageOfPortfolio = 0.3
+                PercentageOfPortfolio = 0.7
             });
             FirstPortfolioToCompare = Portfolio7030;
             RaisePropertyChanged("FirstPortfolioToCompare");
@@ -336,19 +336,11 @@ namespace SAV_Projekt.ViewModel
             };
             PortfolioGlobal.PortfolioEtfs.Add(new PortfolioEtf()
             {
-                Etf = ETFs[9],
-                MinDate = ETFs[9].Values[0].Date,
+                Etf = ETFs[8],
+                MinDate = ETFs[8].Values[0].Date,
                 AvailableEtfs = ETFs,
-                MaxDate = ETFs[9].Values[ETFs[9].Values.Count - 1].Date,
-                PercentageOfPortfolio = 0.05
-            });
-            PortfolioGlobal.PortfolioEtfs.Add(new PortfolioEtf()
-            {
-                Etf = ETFs[2],
-                MinDate = ETFs[2].Values[0].Date,
-                AvailableEtfs = ETFs,
-                MaxDate = ETFs[2].Values[ETFs[2].Values.Count - 1].Date,
-                PercentageOfPortfolio = 0.95
+                MaxDate = ETFs[8].Values[ETFs[8].Values.Count - 1].Date,
+                PercentageOfPortfolio = 1
             });
             SecondPortfolioToCompare = PortfolioGlobal;
             AllPortfolios.Add(PortfolioGlobal);
