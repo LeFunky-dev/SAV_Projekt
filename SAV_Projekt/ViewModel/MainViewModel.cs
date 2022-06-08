@@ -39,6 +39,10 @@ namespace SAV_Projekt.ViewModel
                 if (firstPortfolioToCompare != null && secondPortfolioToCompare != null && firstPortfolioToCompare.PortfolioEtfs != null && secondPortfolioToCompare.PortfolioEtfs != null)
                 {
                     CalcPortfolioSeries();
+                    if(Transactions != null)
+                    {
+                        CalcMetrics(FirstPortfolioToCompare, true);
+                    }
 
                 }
                 RaisePropertyChanged("FirstPortfolioToCompare");
@@ -54,7 +58,10 @@ namespace SAV_Projekt.ViewModel
                 if (firstPortfolioToCompare != null && secondPortfolioToCompare != null && firstPortfolioToCompare.PortfolioEtfs != null && secondPortfolioToCompare.PortfolioEtfs != null)
                 {
                     CalcPortfolioSeries();
-
+                    if (Transactions != null)
+                    {
+                        CalcMetrics(SecondPortfolioToCompare, false);
+                    }
                 }
                 RaisePropertyChanged("SecondPortfolioToCompare");
             }
@@ -156,7 +163,7 @@ namespace SAV_Projekt.ViewModel
                             }
                             if (found && value == entry.Etf.Values[entry.Etf.Values.Count - 1])
                             {
-                                absoluteVal *= (value.Value - startingPercent) / 100;
+                                absoluteVal *= (value.Value / startingPercent);
                             }
                         }
                         startVal += absoluteVal;
@@ -268,7 +275,7 @@ namespace SAV_Projekt.ViewModel
                         {
                             if (entry.Date == endDate)
                             {
-                                var calcPerf = endPerformance - entry.Value;
+                                var calcPerf = endPerformance/ entry.Value *100 -100;
                                 if (j <= 0)
                                 {
                                     ValueGrowthFirst.Add(new ValueGrowth()
@@ -425,7 +432,7 @@ namespace SAV_Projekt.ViewModel
                         }
                         if (found && firstVal != 0)
                         {
-                            etfValues[index].Value += (value.Value + (100 - firstVal)) * etf.PercentageOfPortfolio;
+                            etfValues[index].Value += (value.Value /firstVal) * etf.PercentageOfPortfolio * 100;
                         }
                         else
                         {
@@ -434,7 +441,7 @@ namespace SAV_Projekt.ViewModel
                                 etfValues.Add(new EtfValue()
                                 {
                                     Date = value.Date,
-                                    Value = (value.Value + (100 - firstVal)) * etf.PercentageOfPortfolio
+                                    Value = (value.Value /firstVal) * etf.PercentageOfPortfolio *100
                                 });
                             }
                         }
@@ -481,7 +488,7 @@ namespace SAV_Projekt.ViewModel
                         }
                         if (found && firstVal != 0)
                         {
-                            etfValues[index].Value += (value.Value + (100 - firstVal)) * etf.PercentageOfPortfolio;
+                            etfValues[index].Value += (value.Value / firstVal) * etf.PercentageOfPortfolio *100 ;
                         }
                         else
                         {
@@ -490,7 +497,7 @@ namespace SAV_Projekt.ViewModel
                                 etfValues.Add(new EtfValue()
                                 {
                                     Date = value.Date,
-                                    Value = (value.Value + (100 - firstVal)) * etf.PercentageOfPortfolio
+                                    Value = (value.Value / firstVal) * 100 * etf.PercentageOfPortfolio
                                 });
                             }
 
