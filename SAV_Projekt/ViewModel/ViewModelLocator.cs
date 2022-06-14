@@ -1,17 +1,3 @@
-/*
-  In App.xaml:
-  <Application.Resources>
-      <vm:ViewModelLocator xmlns:vm="clr-namespace:SAV_Projekt"
-                           x:Key="Locator" />
-  </Application.Resources>
-  
-  In the View:
-  DataContext="{Binding Source={StaticResource Locator}, Path=ViewModelName}"
-
-  You can also use Blend to do all this with the tool's support.
-  See http://www.galasoft.ch/mvvm
-*/
-
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
 using CommonServiceLocator;
@@ -30,24 +16,14 @@ namespace SAV_Projekt.ViewModel
         public ViewModelLocator()
         {
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
-
-            ////if (ViewModelBase.IsInDesignModeStatic)
-            ////{
-            ////    // Create design time view services and models
-            ////    SimpleIoc.Default.Register<IDataService, DesignDataService>();
-            ////}
-            ////else
-            ////{
-            ////    // Create run time view services and models
-            ////    SimpleIoc.Default.Register<IDataService, DataService>();
-            ////}
-
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<EtfDetailViewModel>();
             SimpleIoc.Default.Register<AddEditPortfolioViewModel>();
             SimpleIoc.Default.Register<AddTransactionViewModel>();
         }
-
+        /// <summary>
+        /// MainViewModel member for binding MainWindow to this ViewModel
+        /// </summary>
         public MainViewModel Main
         {
             get
@@ -55,7 +31,9 @@ namespace SAV_Projekt.ViewModel
                 return ServiceLocator.Current.GetInstance<MainViewModel>();
             }
         }
-
+        /// <summary>
+        /// EtfDetailViewmodel member for binding EtfDetailWindow to this ViewModel
+        /// </summary>
         public EtfDetailViewModel EtfDetail
         {
             get
@@ -63,6 +41,9 @@ namespace SAV_Projekt.ViewModel
                 return ServiceLocator.Current.GetInstance<EtfDetailViewModel> ();
             }
         }
+        /// <summary>
+        /// AddEditPortfolioViewModel member for binding AddEditPortfolioWindow to this Viewmodel
+        /// </summary>
         public AddEditPortfolioViewModel AddEditPortfolio
         {
             get
@@ -70,16 +51,15 @@ namespace SAV_Projekt.ViewModel
                 return ServiceLocator.Current.GetInstance<AddEditPortfolioViewModel>();
             }
         }
+        /// <summary>
+        /// AddEditPortfolioViewModel member for binding AddTransactionWindow to this Viewmodel
+        /// </summary>
         public AddTransactionViewModel AddTransaction
         {
             get
             {
                 return ServiceLocator.Current.GetInstance<AddTransactionViewModel> ();
             }
-        }
-        public static void Cleanup()
-        {
-            // TODO Clear the ViewModels
         }
     }
 }

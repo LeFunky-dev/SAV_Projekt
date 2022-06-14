@@ -53,35 +53,51 @@ namespace SAV_Projekt.ViewModel
         public SeriesCollection Series { get; set; }
         public ChartValues<EtfValue> ChartValues { get; set; }
         public ICommand ResetEtfDataCommand { get { return new RelayCommand(ResetDate); } }
-
+        /// <summary>
+        /// Method to handle the ResetEtfDataCommand
+        /// </summary>
         private void ResetDate()
         {
+            //Reset the min and max date to default
             MinDate = Etf.Values.FirstOrDefault().Date;
             MaxDate = Etf.Values.LastOrDefault().Date;
         }
-
+        /// <summary>
+        /// Constructor of the EtfDetailViewModel
+        /// </summary>
         public EtfDetailViewModel()
         {
+            //Register to the messenger service
             Messenger.Default.Register<NotificationMessage<Model.Etf>>(this, (c) => EtfNotification(c.Notification, c.Content));
         }
+        /// <summary>
+        /// Method to handle the incoming message if it is type of Etf
+        /// </summary>
+        /// <param name="notification">notification message</param>
+        /// <param name="content">Etf to display</param>
         private void EtfNotification(string notification, Etf content)
         {
             Etf = new Etf();
             Etf = content;
             ChartValues = new ChartValues<EtfValue>();
+            //config of the series
             var dayConfig = Mappers.Xy<EtfValue>()
                            .X(dayModel => dayModel.Date.Ticks)
                            .Y(dayModel => dayModel.Value);
             Series = new SeriesCollection(dayConfig);
+            //Formatter to display the date in the wanted way of yyyy-MM
             Formatter = value => new DateTime((long)value).ToString("yyyy-MM");
+            //Switch between different OperatingCommands
             switch ((OperatingCommandsEnum)Enum.Parse(typeof(OperatingCommandsEnum), notification))
             {
                 case OperatingCommandsEnum.ShowEtfDetail:
                     {
+                        //Add for every content a chart value
                         foreach (var value in content.Values)
                         {
                             ChartValues.Add(value);
                         }
+                        //Add a series with the ChartValues as Values
                         Series.Add(new LineSeries()
                         {
                             Values = ChartValues,
@@ -91,8 +107,10 @@ namespace SAV_Projekt.ViewModel
                     }
                 default: break;
             }
+            //Set min and max date
             MinDate = content.Values.FirstOrDefault().Date;
             MaxDate = content.Values.LastOrDefault().Date;
+            //Calc value growth of the etf
             ValueGrowth = CalcValueGrowth(content);
             RaisePropertyChanged("Formatter");
             RaisePropertyChanged("Series");
@@ -101,6 +119,11 @@ namespace SAV_Projekt.ViewModel
             RaisePropertyChanged("MaxDate");
             RaisePropertyChanged("ValueGrowth");
         }
+        /// <summary>
+        /// Method to calculate the value growth of the etf
+        /// </summary>
+        /// <param name="etf">Etf to calc</param>
+        /// <returns>Returns an observable collection of ValueGrowth</returns>
         private ObservableCollection<ValueGrowth> CalcValueGrowth(Etf etf)
         {
             ObservableCollection<ValueGrowth> valueGrowths = new ObservableCollection<ValueGrowth>();
@@ -130,16 +153,7 @@ namespace SAV_Projekt.ViewModel
                 i++;
                 totalVal += vals[i];
                 startValue = startValue.AddYears(-vals[i]);
-
             }
-            //var calcPerformance = (etf.Values.LastOrDefault().Value / startPerformance * 100) - 100;
-            //valueGrowths.Add(new ValueGrowth()
-            //{
-            //    Period = (max.Year - etf.Values.FirstOrDefault().Date.Year).ToString() + " Jahre ",
-            //    Performance = calcPerformance.ToString("0.00") + "%",
-            //    Color = calcPerformance > 0 ? new SolidColorBrush(Colors.Green) : new SolidColorBrush(Colors.Red)
-            //});
-
             return valueGrowths;
         }
     }

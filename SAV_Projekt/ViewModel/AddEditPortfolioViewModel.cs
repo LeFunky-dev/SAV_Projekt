@@ -25,20 +25,25 @@ namespace SAV_Projekt.ViewModel
         public string PercentErrorMessage { get; set; }
         public bool SubmitEnabled { get; set; } = false;
         public Etf SelectedEtf { get; set; }
+        public SeriesCollection pieSeries { get; set; }
         public ObservableCollection<Etf> AvailableEtfs { get; set; }
         public ObservableCollection<PortfolioEtf> SelectedEtfValues { get; set; }
-
         public ICommand SubmitPortfolioCommand { get { return new RelayCommand(SubmitPortfolio); } }
         public ICommand SelectionChangedCommand { get { return new RelayCommand(SelectionChanged); } }
         public ICommand AddEtfCommand { get { return new RelayCommand(AddEtf); } }
         public ICommand DeleteEtfCommand { get { return new RelayCommand<PortfolioEtf>(DeleteEtf); } }
-
+        /// <summary>
+        /// Method to delete an etf from the portfolio
+        /// </summary>
+        /// <param name="etf"></param>
         private void DeleteEtf(PortfolioEtf etf)
         {
             SelectedEtfValues.Remove(etf);
             RaisePropertyChanged("SelectedEtfValues");
         }
-
+        /// <summary>
+        /// Method to add an etf to the portfolio
+        /// </summary>
         private void AddEtf()
         {
             SelectedEtfValues.Add(new PortfolioEtf()
@@ -51,25 +56,29 @@ namespace SAV_Projekt.ViewModel
             RaisePropertyChanged("SelectedEtfValues");
             SelectionChanged();
         }
-
+        /// <summary>
+        /// Method to handle the events, when a selection change appears
+        /// </summary>
         private void SelectionChanged()
         {
             double sum = 0;
             foreach(var entry in SelectedEtfValues)
             {
-                
                 sum += entry.PercentageOfPortfolio;
             }
+            //Check if sum is 100%
             if(sum == 1.0 )
             {
                 SubmitEnabled = true;
                 PercentErrorMessage = "";
             }
+            //If not display error message
             else
             {
                 SubmitEnabled = false;
                 PercentErrorMessage = percentError;
             }
+            //Check if name is not null
             if(PortfolioName == null || PortfolioName == "")
             {
                 SubmitEnabled = false;
@@ -80,9 +89,9 @@ namespace SAV_Projekt.ViewModel
             LoadPieChart();
 
         }
-
-        public SeriesCollection pieSeries { get; set; }
-
+        /// <summary>
+        /// Method to handle the submit button command
+        /// </summary>
         private void SubmitPortfolio()
         {
             PortfolioToCreateEdit.PortfolioEtfs = SelectedEtfValues;
@@ -90,14 +99,20 @@ namespace SAV_Projekt.ViewModel
             Messenger.Default.Send(OperatingCommandsEnum.ClosePortfolioAddEdit);
             Messenger.Default.Send(new NotificationMessage<Portfolio>(PortfolioToCreateEdit, EditFirstOrSecond.ToString()));
         }
-
+        /// <summary>
+        /// Constructor of the AddEditPortfolioViewModel
+        /// </summary>
         public AddEditPortfolioViewModel()
         {
+            //Register to messages
             Messenger.Default.Register<NotificationMessage<ObservableCollection<Etf>>>(this, (c) => ETfsReceived(c.Notification, c.Content));
             Messenger.Default.Register<NotificationMessage<Portfolio>>(this, (c) => PortfolioReceived(c.Notification, c.Content));
-
         }
-
+        /// <summary>
+        /// Method to handle a received Portfolio
+        /// </summary>
+        /// <param name="notification">Notification message of the input</param>
+        /// <param name="content">Portfolio that was sent</param>
         private void PortfolioReceived(string notification, Portfolio content)
         {
             if(notification == OperatingCommandsEnum.OpenPortfolioEditFirst.ToString())
@@ -123,7 +138,11 @@ namespace SAV_Projekt.ViewModel
             RaisePropertyChanged("SelectedEtfValues");
             LoadPieChart();
         }
-
+        /// <summary>
+        /// Method to handle the AddPortfolio Button from the MainWindow
+        /// </summary>
+        /// <param name="message">Message of the received object</param>
+        /// <param name="EtfCollection">Etfs to choose from, when creating a new portfolio</param>
         private void ETfsReceived(string message, ObservableCollection<Etf> EtfCollection)
         {
             AvailableEtfs = EtfCollection;
@@ -142,7 +161,9 @@ namespace SAV_Projekt.ViewModel
             LoadPieChart();
             RaisePropertyChanged("SelectedEtfValues");
         }
-
+        /// <summary>
+        /// Method to load the pie chart
+        /// </summary>
         private void LoadPieChart()
         {
             pieSeries = new SeriesCollection();

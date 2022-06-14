@@ -23,7 +23,6 @@ namespace SAV_Projekt.ViewModel
     {
         private const string targetDirectory = @"..\..\..\ETF_Data\";
         public ObservableCollection<EtfValue> Transactions { get; set; }
-
         public SectionsCollection SectionCollection { get; set; }
         public ObservableCollection<Portfolio> AllPortfolios { get; set; }
         public ObservableCollection<ValueGrowth> ValueGrowthFirst { get; set; }
@@ -36,14 +35,14 @@ namespace SAV_Projekt.ViewModel
             set
             {
                 firstPortfolioToCompare = value;
-                if (firstPortfolioToCompare != null && secondPortfolioToCompare != null && firstPortfolioToCompare.PortfolioEtfs != null && secondPortfolioToCompare.PortfolioEtfs != null)
+                if (firstPortfolioToCompare != null && secondPortfolioToCompare != null 
+                    && firstPortfolioToCompare.PortfolioEtfs != null && secondPortfolioToCompare.PortfolioEtfs != null)
                 {
                     CalcPortfolioSeries();
                     if(Transactions != null)
                     {
                         CalcMetrics(FirstPortfolioToCompare, true);
                     }
-
                 }
                 RaisePropertyChanged("FirstPortfolioToCompare");
             }
@@ -55,7 +54,8 @@ namespace SAV_Projekt.ViewModel
             set
             {
                 secondPortfolioToCompare = value;
-                if (firstPortfolioToCompare != null && secondPortfolioToCompare != null && firstPortfolioToCompare.PortfolioEtfs != null && secondPortfolioToCompare.PortfolioEtfs != null)
+                if (firstPortfolioToCompare != null && secondPortfolioToCompare != null 
+                    && firstPortfolioToCompare.PortfolioEtfs != null && secondPortfolioToCompare.PortfolioEtfs != null)
                 {
                     CalcPortfolioSeries();
                     if (Transactions != null)
@@ -74,10 +74,6 @@ namespace SAV_Projekt.ViewModel
         public ICommand EditFirstPortfolioCommand { get { return new RelayCommand(EditFirstPortfolio); } }
         public ICommand EditSecondPortfolioCommand { get { return new RelayCommand(EditSecondPortfolio); } }
         public ICommand ModifyTransactionsCommand { get { return new RelayCommand(ModifyTransaction); } }
-
-
-
-
         private DateTime minDate;
         private DateTime maxDate;
         public DateTime MinDate
@@ -126,34 +122,51 @@ namespace SAV_Projekt.ViewModel
             ValueGrowthSecond = new ObservableCollection<ValueGrowth>();
             Transactions = new ObservableCollection<EtfValue>();
             SectionCollection = new SectionsCollection();
+            //Register to collection changed event
             Transactions.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(TransactionChanged);
+            //Register to messenger
             Messenger.Default.Register<NotificationMessage<Portfolio>>(this, (c) => NotificationMessageReceived(c.Notification, c.Content));
+            //Reads in values from the given csv files
             InitValues();
+            //Initializes two default portfolios
             InitPortfolios();
+            //Calculates initial valuegrowth
             InitValueGrowth(FirstPortfolioToDisplay);
 
         }
-
+        /// <summary>
+        /// Method to handle the change of the transaction observable collection
+        /// and calculate the metrics new
+        /// </summary>
+        /// <param name="sender">sender param</param>
+        /// <param name="e">event args</param>
         private void TransactionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             CalcMetrics(FirstPortfolioToCompare,true);
             CalcMetrics(SecondPortfolioToCompare, false);
         }
-
+        /// <summary>
+        /// Method to calculate the metrics of a portfolio
+        /// </summary>
+        /// <param name="portfolio">Portfolio to calc metrics for</param>
+        /// <param name="isFirst">Determines whether first or second portfolio should be calculated</param>
         private void CalcMetrics(Portfolio portfolio, bool isFirst)
         {
             double startVal = 0;
             double investments = 0.0;
+            //Iterate over every transaction
             foreach (var transaction in Transactions)
             {
                 if (transaction != null)
                 {
                     investments += transaction.Value;
+                    //Iterate over every etf
                     foreach (var entry in portfolio.PortfolioEtfs)
                     {
                         bool found = false;
                         double startingPercent = 0;
                         double absoluteVal = transaction.Value * entry.PercentageOfPortfolio;
+                        //Add up every value to a total
                         foreach (var value in entry.Etf.Values)
                         {
                             if (value.Date == transaction.Date && !found)
@@ -170,6 +183,7 @@ namespace SAV_Projekt.ViewModel
                     }
                 }
             }
+            //Sets the specs for the portfolio
             portfolio.PriceGain = Math.Round(startVal,2,MidpointRounding.ToEven);
             portfolio.Profit = Math.Round(startVal - investments,2,MidpointRounding.ToEven);
             portfolio.Investments = Math.Round(investments/1.0,2,MidpointRounding.ToEven);
@@ -182,7 +196,9 @@ namespace SAV_Projekt.ViewModel
                 RaisePropertyChanged("SecondPortfolioToCompare");
             }
         }
-
+        /// <summary>
+        /// Method to handle the ModifyTransactionCommand
+        /// </summary>
         private void ModifyTransaction()
         {
             ObservableCollection<DateTime> dates = new ObservableCollection<DateTime>();
@@ -192,6 +208,9 @@ namespace SAV_Projekt.ViewModel
             Messenger.Default.Send(new NotificationMessage<ObservableCollection<EtfValue>>(Transactions, OperatingCommandsEnum.OpenAddTransaction.ToString()));
             Messenger.Default.Send(new NotificationMessage<ObservableCollection<DateTime>>(dates, OperatingCommandsEnum.OpenAddTransaction.ToString()));
         }
+        /// <summary>
+        /// Method to reset the comparison to the default date
+        /// </summary>
         private void ResetPortfolioComparison()
         {
             List<DateTime> minDates = new List<DateTime>();
@@ -211,48 +230,75 @@ namespace SAV_Projekt.ViewModel
                 MaxDate = FirstPortfolioToCompare.PortfolioEtfs[0].Etf.Values[FirstPortfolioToCompare.PortfolioEtfs[0].Etf.Values.Count - 1].Date;
             }
         }
-
+        /// <summary>
+        /// Method to handle the ShowEtfDetail Command
+        /// </summary>
+        /// <param name="portfolioEtf"></param>
         private void ShowEtfDetail(PortfolioEtf portfolioEtf)
         {
+            //Send command to the registered messenger user
             Messenger.Default.Send(OperatingCommandsEnum.OpenEtfDetail);
             Messenger.Default.Send(new NotificationMessage<Etf>(portfolioEtf.Etf, OperatingCommandsEnum.ShowEtfDetail.ToString()));
         }
+        /// <summary>
+        /// Method to handle the EditFirstPortfolioCommand
+        /// </summary>
         private void EditFirstPortfolio()
         {
+            //Adds available ETFs to portfolio
             foreach (var entry in FirstPortfolioToCompare.PortfolioEtfs)
             {
                 entry.AvailableEtfs = ETFs;
             }
+            //Send command to the registered messenger user
             Messenger.Default.Send(OperatingCommandsEnum.OpenPortfolioAddEdit);
             Messenger.Default.Send(new NotificationMessage<Portfolio>(FirstPortfolioToCompare, OperatingCommandsEnum.OpenPortfolioEditFirst.ToString()));
         }
-
+        /// <summary>
+        /// Method to handle the EditSecondPortfolioCommand
+        /// </summary>
         private void EditSecondPortfolio()
         {
+            //Adds available ETFs to portfolio
             foreach (var entry in SecondPortfolioToCompare.PortfolioEtfs)
             {
                 entry.AvailableEtfs = ETFs;
             }
+            //Send command to the registered messenger user
             Messenger.Default.Send(OperatingCommandsEnum.OpenPortfolioAddEdit);
             Messenger.Default.Send(new NotificationMessage<Portfolio>(SecondPortfolioToCompare, OperatingCommandsEnum.OpenPortfolioEditSecond.ToString()));
         }
-
+        /// <summary>
+        /// Method to handle the CreatePortfolioCommand
+        /// </summary>
         private void CreatePortfolio()
         {
+            //Send command to the registered messenger user 
             Messenger.Default.Send(OperatingCommandsEnum.OpenPortfolioAddEdit);
             Messenger.Default.Send(new NotificationMessage<ObservableCollection<Etf>>(ETFs, OperatingCommandsEnum.OpenPortfolioAddEdit.ToString()));
         }
+        /// <summary>
+        /// Method to handle the NotificationMessagesReceived from Add or Edit Portfolio ViewModel
+        /// </summary>
+        /// <param name="notification">Notification message</param>
+        /// <param name="content">Portfolio that was added/edited</param>
         private void NotificationMessageReceived(string notification, Portfolio content)
         {
             switch (notification)
             {
+                //If portfolio was added
                 case "0": AllPortfolios.Add(content); break;
+                //If FirstPortfolio changed
                 case "1": FirstPortfolioToCompare = content; break;
+                //If SecondPortfolio changed
                 case "2": SecondPortfolioToCompare = content; break;
                 default: break;
             }
         }
-
+        /// <summary>
+        /// Method to handle the initial ValueGrowth of the portfolios
+        /// </summary>
+        /// <param name="portfolio"></param>
         private void InitValueGrowth(SeriesCollection portfolio)
         {
             ValueGrowthFirst = new ObservableCollection<ValueGrowth>();
@@ -304,7 +350,9 @@ namespace SAV_Projekt.ViewModel
                 }
             }
         }
-
+        /// <summary>
+        /// Method to handle the initialization of the portfolios
+        /// </summary>
         private void InitPortfolios()
         {
             Portfolio Portfolio7030 = new Portfolio()
@@ -347,7 +395,9 @@ namespace SAV_Projekt.ViewModel
             AllPortfolios.Add(Portfolio7030);
             RaisePropertyChanged("SecondPortfolioToCompare");
         }
-
+        /// <summary>
+        /// Method to handle the read in of the given csv datas
+        /// </summary>
         private void InitValues()
         {
             string[] fileEntries = Directory.GetFiles(targetDirectory);
@@ -377,6 +427,9 @@ namespace SAV_Projekt.ViewModel
                 }
             }
         }
+        /// <summary>
+        /// Method to calculate the series for first and second portfolio
+        /// </summary>
         private void CalcPortfolioSeries()
         {
             var dayConfig = Mappers.Xy<EtfValue>()
