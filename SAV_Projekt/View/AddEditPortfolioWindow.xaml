@@ -8,6 +8,7 @@
         xmlns:local="clr-namespace:SAV_Projekt.View"
         xmlns:wpfui="http://schemas.lepo.co/wpfui/2022/xaml"
         mc:Ignorable="d"
+        WindowStyle="None"
         DataContext="{Binding Source={StaticResource Locator}, Path=AddEditPortfolio}"
         Title="Portfolio erstellen / bearbeiten" Height="600" Width="1000">
     <Grid>

@@ -38,7 +38,7 @@ namespace SAV_Projekt.ViewModel
                 firstPortfolioToCompare = value;
                 if (firstPortfolioToCompare != null && secondPortfolioToCompare != null && firstPortfolioToCompare.PortfolioEtfs != null && secondPortfolioToCompare.PortfolioEtfs != null)
                 {
-                    CalcPortfolioSeries();
+                    Task.Run(()=>CalcPortfolioSeries());
                     if(Transactions != null)
                     {
                         CalcMetrics(FirstPortfolioToCompare, true);
